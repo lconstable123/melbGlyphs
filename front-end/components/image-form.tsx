@@ -3,44 +3,40 @@ import { toast } from "react-hot-toast";
 import { UploadCard } from "./upload-card";
 import { ImgSkeleton, LoadingCard } from "./loading-card";
 import { Button } from "@/components/ui/button";
-import type { TlocationData, TselectedImages } from "@/lib/types";
+import type { TlocationData, TuploadImage, TuploadImages } from "@/lib/types";
 import { ImageConverter } from "@/lib/api-utils";
 import { motion, useAnimation } from "framer-motion";
+import { useLocationContext } from "@/lib/providers/location-provider";
+// import { useLocationContext } from "@/lib/providers/location-provider";
 
 export const ImageForm = () => {
-  const controls = useAnimation();
-  const [displayError, setDisplayError] = useState(false);
-  const handleAnimateError = () => {
-    setDisplayError(true);
-    controls.start({
-      x: [0, -10, 10, -2, 0],
-      transition: { duration: 0.4 },
-    });
-  };
+  //from context
+  const { uploadedImages, setUploadedImages } = useLocationContext();
 
-  const [images, setSelectedImages] = useState<TselectedImages[]>([]);
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    toast.success("Images uploaded successfully!");
+    handleAnimateError();
+  };
 
   const handleUpdateLocation = (pos: TlocationData, key: string) => {
     setDisplayError(false);
-    setSelectedImages((prevImages) =>
+    setUploadedImages((prevImages) =>
       prevImages.map((img) =>
         img.key === key ? { ...img, locationData: pos } : img
       )
     );
   };
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    handleAnimateError();
-  };
   const handleDeleteUpload = (key: string) => {
-    setSelectedImages((prevImages) =>
+    setUploadedImages((prevImages) =>
       prevImages.filter((img) => img.key !== key)
     );
   };
-  const HandleImageConverter = async (image: TselectedImages) => {
+
+  const HandleImageConverter = async (image: TuploadImage) => {
     const convertedImage = await ImageConverter(image);
     if (!convertedImage) return;
-    setSelectedImages((prevImages) =>
+    setUploadedImages((prevImages) =>
       prevImages.map((img) => (img.key === image.key ? convertedImage : img))
     );
 
@@ -50,7 +46,7 @@ export const ImageForm = () => {
   const handleImageChange = (e: any) => {
     const files: File[] = Array.from(e.target.files);
     const imagePreviews = files.map((file, index) => {
-      const alreadyExists = images.some(
+      const alreadyExists = uploadedImages.some(
         (existingImg) =>
           existingImg.file.name === file.name &&
           existingImg.file.size === file.size &&
@@ -76,7 +72,7 @@ export const ImageForm = () => {
       } else {
         //file is not jpg, call endpoint and convert
 
-        const convertingImage: TselectedImages = {
+        const convertingImage: TuploadImage = {
           key: file.name + crypto.randomUUID(),
           converted: false,
           file,
@@ -89,9 +85,9 @@ export const ImageForm = () => {
         return convertingImage;
       }
     });
-    setSelectedImages((prevImages) => [
+    setUploadedImages((prevImages) => [
       ...prevImages,
-      ...(imagePreviews.filter(Boolean) as TselectedImages[]),
+      ...(imagePreviews.filter(Boolean) as TuploadImages),
     ]);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -104,18 +100,28 @@ export const ImageForm = () => {
     fileInputRef.current?.click();
   };
 
+  //-------------------------------------Animation and Error Handling-------------------------------------
+  const controls = useAnimation();
+  const [displayError, setDisplayError] = useState(false);
+  const handleAnimateError = () => {
+    setDisplayError(true);
+    controls.start({
+      x: [0, -10, 10, -2, 0],
+      transition: { duration: 0.4 },
+    });
+    setTimeout(() => {
+      setDisplayError(false);
+    }, 1000);
+  };
+
   return (
     <>
       <form
         onSubmit={handleSubmit}
-        className=" flex flex-col justify-start gap-1"
+        className=" flex flex-col justify-start gap-1 "
       >
-        {/* <p className="flex justify-center items-center h-3 text-sm text-fuchsia-600">
-          upload at least one image
-        </p> */}
-
         <div className="h-full">
-          {images.length > 0 && <Button type="submit">Upload</Button>}
+          {uploadedImages.length > 0 && <Button type="submit">Upload</Button>}
         </div>
         <div className="flex">
           <input
@@ -135,10 +141,12 @@ export const ImageForm = () => {
         >
           <ImgSkeleton handleUploadImage={handleUploadImage} />
 
-          {images?.map((image) => (
+          {uploadedImages?.map((image) => (
             <div key={image.key} className="">
               {image.converted ? (
                 <UploadCard
+                  artist={image.artist || null}
+                  suburb={image.suburb || ""}
                   image={image}
                   setGlobalLocation={handleUpdateLocation}
                   handleDeleteUpload={handleDeleteUpload}

@@ -1,17 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "leaflet/dist/leaflet.css";
+@import "mapbox-gl/dist/mapbox-gl.css";
 /* @custom-variant dark (&:is(.dark *)); */
 
 #root {
   /* max-width: 1280px; */
   /* margin: 0 auto; */
-  padding: 10rem 10rem;
+
   text-align: center;
   width: 100%;
+
   @apply bg-neutral-900;
-  display: flex;
-  justify-content: center;
 }
 .text-primary-foreground {
   @apply text-gray-100;
@@ -37,6 +37,83 @@
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.mapboxgl-popup.custom-popup {
+  /* padding: 0 !important;
+  margin: 0 !important; */
+  border: none;
+}
+.mapboxgl-popup-content {
+  background: black !important;
+  border: none;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.mapboxgl-popup.custom-popup .mapboxgl-popup-tip {
+  /* background: black !important; */
+  border-top-color: black;
+}
+.mapboxgl-popup-close-button {
+  top: 0px;
+  width: 10px;
+  height: 10px;
+  display: none;
+  /* background-color: black; */
+}
+
+.map-popup__content {
+  background-color: black;
+  padding: 0;
+  margin: 0;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.map-popup__update-details {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.map-popup__image {
+  vertical-align: middle;
+  /* width: 200px;
+  height: 200px; */
+}
+.map-popup__image-wrapper {
+  position: relative;
+}
+
+.map-popup__fader {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+  pointer-events: none; /* Don’t block hover events */
+}
+.map-popup__artist {
+  display: block;
+  /* height: 100px; */
+  /* color: red; */
+}
+.map-popup__image-wrapper:hover .map-popup__fader {
+  opacity: 0.4;
+}
+.map-popup__image-wrapper:hover .map-popup__update-details {
+  opacity: 1;
 }
 
 @keyframes logo-spin {

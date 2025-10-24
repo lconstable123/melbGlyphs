@@ -1,7 +1,7 @@
 import { queryLocation } from "@/lib/api-utils";
 import type { Tcoordinates, TlocationData } from "@/lib/types";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { defaultLocation } from "../src/lib/data";
 import {
   MapContainer,
   TileLayer,
@@ -21,7 +21,6 @@ export const Map = ({
   allowSearch: boolean;
 }) => {
   //fitzroy
-  const defaultLocation: [number, number] = [-37.801038, 144.979261];
 
   const startingLoc: [number, number] = startingLocation
     ? [startingLocation.latitude, startingLocation.longitude]

@@ -31,10 +31,16 @@ const buttonVariants = cva(
         "icon-sm": "size-8",
         "icon-lg": "size-10",
       },
+      accessability: {
+        true: "",
+        false:
+          "focus:bg-red-200 focus-visible:ring-0! focus-visible:ring-offset-0! outline-none! ",
+      },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
+      accessability: true,
     },
   }
 );
