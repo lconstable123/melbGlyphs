@@ -1,4 +1,3 @@
-import { IoMdCloseCircle } from "react-icons/io";
 import { fetchSuburbFromCoords } from "../src/lib/api-utils";
 import type { TlocationData, TuploadImage } from "../src/lib/types";
 import { useEffect } from "react";
@@ -6,7 +5,7 @@ import { LocationModal } from "./location-modal";
 import { ArtistModal } from "./artist-modal";
 import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "@/lib/providers/location-provider";
-import { toast } from "react-hot-toast";
+
 import { ImageCloser } from "./image-closer";
 export const UploadCard = ({
   image,
