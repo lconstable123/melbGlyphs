@@ -4,10 +4,10 @@ import multer from "multer";
 import sharp from "sharp";
 import heicConvert from "heic-convert";
 import { fileTypeFromBuffer } from "file-type";
-
+import cors from "cors";
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
-
+app.use(cors());
 app.use(express.json());
 
 app.post("/convert", upload.single("image"), async (req, res) => {
@@ -36,3 +36,9 @@ app.post("/convert", upload.single("image"), async (req, res) => {
 
 // Wrap the Express app in a serverless handler
 export default serverless(app);
+
+export const config = {
+  api: {
+    bodyParser: false, // allow multer to handle file uploads
+  },
+};
