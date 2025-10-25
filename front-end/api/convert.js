@@ -1,12 +1,14 @@
 import multer from "multer";
 import sharp from "sharp";
+import heicConvert from "heic-convert";
+import { fileTypeFromBuffer } from "file-type";
 
 // Configure multer for in-memory file storage
 const upload = multer({ storage: multer.memoryStorage() });
 
 export const config = {
   api: {
-    bodyParser: false, // Important for file uploads
+    bodyParser: false, // Required for file uploads
   },
 };
 
@@ -17,41 +19,50 @@ export default async function handler(req, res) {
     return;
   }
 
-  // POST: handle image conversion
+  // POST: image conversion
   if (req.method === "POST") {
-    try {
-      // Use multer to handle single file upload
-      upload.single("image")(req, res, async (err) => {
-        if (err) {
-          console.error("Multer error:", err);
-          return res.status(500).json({ error: "File upload error" });
-        }
+    upload.single("image")(req, res, async (err) => {
+      if (err) {
+        console.error("Multer error:", err);
+        return res.status(500).json({ error: "File upload error" });
+      }
 
-        if (!req.file) {
-          return res.status(400).json({ error: "No file uploaded" });
-        }
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
 
-        try {
-          // Convert image to JPEG using Sharp
-          const jpegBuffer = await sharp(req.file.buffer)
-            .jpeg({ quality: 100 })
-            .toBuffer();
+      try {
+        let buffer = req.file.buffer;
 
-          const base64Image = jpegBuffer.toString("base64");
+        // Detect file type
+        const type = await fileTypeFromBuffer(buffer);
 
-          res.status(200).json({
-            message: "Image converted successfully",
-            image: { mimeType: "image/jpeg", data: base64Image },
+        // Handle HEIC/HEIF
+        if (type?.mime === "image/heic" || type?.mime === "image/heif") {
+          buffer = await heicConvert({
+            buffer,
+            format: "JPEG",
+            quality: 1,
           });
-        } catch (conversionError) {
-          console.error("Sharp conversion error:", conversionError);
-          res.status(500).json({ error: "Image conversion failed" });
         }
-      });
-    } catch (error) {
-      console.error("POST handler error:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+
+        // Convert everything to JPEG
+        const jpegBuffer = await sharp(buffer)
+          .jpeg({ quality: 100 })
+          .toBuffer();
+
+        const base64Image = jpegBuffer.toString("base64");
+
+        res.status(200).json({
+          message: "Image converted successfully",
+          image: { mimeType: "image/jpeg", data: base64Image },
+        });
+      } catch (conversionError) {
+        console.error("Conversion error:", conversionError);
+        res.status(500).json({ error: "Image conversion failed" });
+      }
+    });
+
     return;
   }
 
