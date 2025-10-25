@@ -10,9 +10,12 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/convert", upload.single("image"), async (req, res) => {
+  console.log("Received file:", req.file?.originalname);
+
   try {
     if (!req.file) return res.status(400).json({ error: "File not found" });
 
+    // Convert any image (including HEIC/HEIF) to JPEG
     const jpegBuffer = await sharp(req.file.buffer)
       .jpeg({ quality: 100 })
       .toBuffer();
@@ -31,6 +34,7 @@ app.post("/convert", upload.single("image"), async (req, res) => {
 
 export default app;
 
+// Allow multer to handle file uploads without Express body parser interfering
 export const config = {
   api: {
     bodyParser: false,

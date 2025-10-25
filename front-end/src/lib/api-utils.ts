@@ -61,8 +61,9 @@ export const fetchSuburbFromCoords = async (
 export const ImageConverter = async (image: TuploadImage) => {
   const formData = new FormData();
   formData.append("image", image.file);
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-  const res = await fetch(`${apiUrl}/convert`, {
+  const apiUrl = import.meta.env.VITE_API_URL!;
+
+  const res = await fetch(`${apiUrl}`, {
     method: "POST",
     body: formData,
   });
