@@ -1,4 +1,4 @@
-import type { TselectedImages } from "./types";
+import type { TuploadImage } from "./types";
 import * as exifr from "exifr";
 export const queryLocation = async (query: string) => {
   if (!query) return;
@@ -58,7 +58,7 @@ export const fetchSuburbFromCoords = async (
   }
 };
 
-export const ImageConverter = async (image: TselectedImages) => {
+export const ImageConverter = async (image: TuploadImage) => {
   const formData = new FormData();
   formData.append("image", image.file);
   const res = await fetch("http://localhost:5000/convert", {
@@ -72,7 +72,7 @@ export const ImageConverter = async (image: TselectedImages) => {
 
   const data = await res.json();
   // toast.success("Image Converted!");
-  const convertedImage: TselectedImages = {
+  const convertedImage: TuploadImage = {
     key: image.key,
     converted: true,
     file: image.file,

@@ -1,7 +1,5 @@
 import "./App.css";
 
-import { ImageForm } from "../components/image-form";
-import { Button } from "./components/ui/button";
 import { SplashScreen } from "../components/splash-screen";
 import { useLocationContext } from "./lib/providers/location-provider";
 import { GeoMap } from "../components/geo-map";
