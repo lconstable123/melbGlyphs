@@ -9,7 +9,7 @@ import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "@/lib/providers/location-provider";
 // import { useLocationContext } from "@/lib/providers/location-provider";
 
-export const ImageForm = () => {
+export const ImageUploads = () => {
   //from context
   const { uploadedImages, setUploadedImages } = useLocationContext();
 
@@ -137,10 +137,8 @@ export const ImageForm = () => {
         </div>
         <motion.div
           animate={controls}
-          className="flex flex-row-reverse border  justify-center  flex-wrap gap-2  "
+          className="flex flex-row   justify-center  flex-wrap gap-4  "
         >
-          <ImgSkeleton handleUploadImage={handleUploadImage} />
-
           {uploadedImages?.map((image) => (
             <div key={image.key} className="">
               {image.converted ? (

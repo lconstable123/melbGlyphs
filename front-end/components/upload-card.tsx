@@ -84,11 +84,11 @@ export const UploadCard = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="flex flex-col gap-2 justify-start   "
+      className="flex flex-col gap-2 w-50 justify-start   "
     >
       <div
         id="image-container"
-        className="group relative  rounded-sm overflow-hidden  "
+        className="group relative border border-fuchsia-500 h-50  rounded-sm overflow-hidden  "
       >
         <div
           id="whitefader"
@@ -103,7 +103,7 @@ export const UploadCard = ({
         <img
           src={image.preview as string}
           alt={image.preview}
-          className=" w-50 h-50 rounded-md object-cover "
+          className="select-none w-50 h-50 rounded-md object-cover "
         />
         <LocationModal
           setGlobalLocation={setGlobalLocation}
@@ -113,7 +113,7 @@ export const UploadCard = ({
       </div>
       <div
         id="location-info"
-        className="select-none  text-sm   h-full text-white bg-opacity-75 pb-0 pt-1"
+        className="select-none  text-sm   h-full text-white bg-opacity-75 pb-0 pt-0"
       >
         <div id="location-details" className="flex flex-col   items-center">
           <ArtistModal
@@ -121,12 +121,12 @@ export const UploadCard = ({
             artist={artist}
             handleSetArtist={handleSetUploadedArtist}
           />
-          <div id="location-suburb" className="font-medium pt-2">
+          <p id="location-suburb" className="font-medium pt-2">
             {suburb}
-          </div>
+          </p>
           <div
             id="location-coordinates"
-            className="flex text-white/80 text-[9pt] gap-1 "
+            className="flex text-white/80 text-[7pt] gap-0 "
           >
             {location !== null ? (
               <>
@@ -135,7 +135,7 @@ export const UploadCard = ({
               </>
             ) : (
               <div className="text-sm flex flex-col items-center">
-                <p>No location data available</p>
+                <p className="text-[9pt] ">No location data available</p>
 
                 <motion.p
                   initial={{ opacity: 0 }}

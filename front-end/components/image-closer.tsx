@@ -10,7 +10,7 @@ export const ImageCloser = ({
   return (
     <i
       id="close-button"
-      className=" absolute top-0 right-0  p-1 rounded-bl-lg z-40  bg-black/90 cursor-pointer"
+      className=" absolute top-0 right-0  p-1 rounded-bl-lg z-40  bg-fuchsia-500 cursor-pointer"
     >
       <IoMdCloseCircle
         onClick={() => {
@@ -23,7 +23,7 @@ export const ImageCloser = ({
           }
         }}
         role="button"
-        className="focus:ring-1 focus:ring-offset-0  hover:scale-110 scale-100 w-5 h-5 drop-shadow shadow-lg "
+        className="focus:ring-1 text-black focus:ring-offset-0  hover:scale-110 scale-100 w-5 h-5 drop-shadow shadow-lg "
       />
     </i>
   );

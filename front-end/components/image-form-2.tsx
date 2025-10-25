@@ -2,16 +2,20 @@ import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { UploadCard } from "./upload-card";
 import { ImgSkeleton, LoadingCard } from "./loading-card";
-import { Button } from "@/components/ui/button";
-import type { TlocationData, TuploadImage, TuploadImages } from "@/lib/types";
-import { ImageConverter } from "@/lib/api-utils";
+import { Button } from "../src/components/ui/button";
+import type {
+  TlocationData,
+  TuploadImage,
+  TuploadImages,
+} from "../src/lib/types";
+import { ImageConverter } from "../src/lib/api-utils";
 import { motion, useAnimation } from "framer-motion";
-import { useLocationContext } from "@/lib/providers/location-provider";
+import { useLocationContext } from "../src/lib/providers/location-provider";
 // import { useLocationContext } from "@/lib/providers/location-provider";
 
-export const ImageForm = () => {
+export const ImageForm2 = () => {
   //from context
-  const { uploadedImages, setUploadedImages } = useLocationContext();
+  const { uploadedImages, setUploadedImages, setMode } = useLocationContext();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -44,6 +48,7 @@ export const ImageForm = () => {
   };
 
   const handleImageChange = (e: any) => {
+    setMode("explore");
     const files: File[] = Array.from(e.target.files);
     const imagePreviews = files.map((file, index) => {
       const alreadyExists = uploadedImages.some(
@@ -116,13 +121,10 @@ export const ImageForm = () => {
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit}
-        className=" flex flex-col justify-start gap-1 "
-      >
-        <div className="h-full ">
+      <form onSubmit={handleSubmit} className="h-full  ">
+        {/* <div className="h-full ">
           {uploadedImages.length > 0 && <Button type="submit">Upload</Button>}
-        </div>
+        </div> */}
         <div className="flex">
           <input
             id="file-upload"
@@ -135,28 +137,8 @@ export const ImageForm = () => {
             className="hidden"
           />
         </div>
-        <motion.div
-          animate={controls}
-          className="flex flex-row-reverse border  justify-center  flex-wrap gap-2  "
-        >
+        <motion.div animate={controls} className=" w-45 h-45     ">
           <ImgSkeleton handleUploadImage={handleUploadImage} />
-
-          {uploadedImages?.map((image) => (
-            <div key={image.key} className="">
-              {image.converted ? (
-                <UploadCard
-                  artist={image.artist || null}
-                  suburb={image.suburb || ""}
-                  image={image}
-                  setGlobalLocation={handleUpdateLocation}
-                  handleDeleteUpload={handleDeleteUpload}
-                  displayError={displayError}
-                />
-              ) : (
-                <LoadingCard />
-              )}
-            </div>
-          ))}
         </motion.div>
       </form>
     </>

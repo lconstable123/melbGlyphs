@@ -4,6 +4,45 @@
 @import "mapbox-gl/dist/mapbox-gl.css";
 /* @custom-variant dark (&:is(.dark *)); */
 
+.rock-salt,
+h1 {
+  font-family: "Rock Salt", cursive;
+  font-weight: 400;
+  font-style: normal;
+  /* @apply text-indigo-600; */
+}
+
+.suse-mono,
+p {
+  font-family: "SUSE Mono", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  letter-spacing: 0.1rem;
+  line-height: 1rem;
+}
+.font-bolder {
+  font-weight: 800;
+}
+
+.saira-stencil,
+h2 {
+  font-family: "Saira Stencil One", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 0.05rem;
+}
+.color-emphasis {
+  @apply text-fuchsia-500;
+}
+.bg-emphasis {
+  @apply bg-fuchsia-500;
+}
+
+.hover-outline {
+  @apply transition-all duration-300 outline-1 hover:outline-fuchsia-500 outline-fuchsia-500/0;
+}
+
 #root {
   /* max-width: 1280px; */
   /* margin: 0 auto; */

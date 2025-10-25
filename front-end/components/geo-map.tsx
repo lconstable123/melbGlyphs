@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import type { TuploadImage } from "@/lib/types";
 export const GeoMap = () => {
   const { uploadedImages, setInspectingImage } = useLocationContext();
-
+  const { setMode, mode } = useLocationContext();
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -118,5 +118,16 @@ export const GeoMap = () => {
     }
   }, [uploadedImages]);
 
-  return <div ref={mapContainerRef} className="absolute w-full h-screen " />;
+  return (
+    <div
+      onClick={() => {
+        if (mode !== "explore") {
+          setMode("explore");
+          toast.success("Explore mode activated");
+        }
+      }}
+      ref={mapContainerRef}
+      className="absolute w-full h-screen "
+    />
+  );
 };

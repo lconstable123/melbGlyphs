@@ -67,7 +67,7 @@ export const LocationModal = ({
       >
         <div
           className={`
-            group-hover:outline-1 rounded-lg outline-white/40
+            group-hover:outline-1 rounded-lg outline-fuchsia-500/40
             ${
               location === null
                 ? "opacity-100 "

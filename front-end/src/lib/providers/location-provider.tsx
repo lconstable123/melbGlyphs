@@ -9,6 +9,8 @@ type TLocationContext = {
   setMode: React.Dispatch<React.SetStateAction<Tmode>>;
   inspectingImage: TImage | null;
   setInspectingImage: React.Dispatch<React.SetStateAction<TImage | null>>;
+  uploading: boolean;
+  setUploading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const LocationContext = createContext<TLocationContext | undefined>(undefined);
@@ -21,6 +23,7 @@ export const LocationProvider = ({
   const [serverImages, setServerImages] = useState<TImages>([]);
   const [uploadedImages, setUploadedImages] = useState<TuploadImages>([]);
   const [mode, setMode] = useState<Tmode>("initial");
+  const [uploading, setUploading] = useState<boolean>(false);
   const [inspectingImage, setInspectingImage] = useState<TImage | null>(null);
 
   return (
@@ -31,6 +34,8 @@ export const LocationProvider = ({
         setUploadedImages,
         mode,
         setMode,
+        uploading,
+        setUploading,
         inspectingImage,
         setInspectingImage,
       }}

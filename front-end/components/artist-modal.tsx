@@ -42,15 +42,15 @@ export const ArtistModal = ({
         setIsOpen(open);
       }}
     >
-      <DialogTrigger className="hover:outline-1 outline-white/40 focus-visible:outline-none rounded-md focus-visible:ring-1 cursor-pointer group h-full *:**:not-[]:l   ">
-        <div
+      <DialogTrigger className="hover-outline focus-visible:outline-none rounded-md focus-visible:ring-1 cursor-pointer group h-full *:**:not-[]:l   ">
+        <p
           className={`
              transition-all duration-400 bg-black px-2 py-1 rounded-md  `}
         >
           {/* <Button size="sm" variant="onImage" accessability={false}> */}
-          {artist !== null ? artist : "Tag Artist (optional)"}
+          {artist !== null ? artist : "Tag Artist"}
           {/* </Button> */}
-        </div>
+        </p>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-black   py-10">
         <DialogHeader>
