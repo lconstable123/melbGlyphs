@@ -8,10 +8,10 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors());
 app.use(express.json());
-app.get("/convert", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Image Converter API is running");
 });
-app.post("/convert", upload.single("image"), async (req, res) => {
+app.post("/", upload.single("image"), async (req, res) => {
   console.log("Received file:", req.file?.originalname);
 
   try {
