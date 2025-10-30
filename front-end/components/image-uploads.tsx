@@ -2,20 +2,55 @@ import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { UploadCard } from "./upload-card";
 import { ImgSkeleton, LoadingCard } from "./loading-card";
-import { Button } from "@/components/ui/button";
-import type { TlocationData, TuploadImage, TuploadImages } from "@/lib/types";
-import { ImageConverter } from "@/lib/api-utils";
+import { Button } from "../src/components/ui/button";
+import type {
+  TlocationData,
+  TuploadImage,
+  TuploadImages,
+} from "../src/lib/types";
+import { ImageConverter } from "../src/lib/api-utils";
 import { motion, useAnimation } from "framer-motion";
-import { useLocationContext } from "@/lib/providers/location-provider";
+import { useLocationContext } from "../src/lib/providers/location-provider";
+import { uploadImages } from "../src/lib/server-utils";
 // import { useLocationContext } from "@/lib/providers/location-provider";
 
 export const ImageUploads = () => {
   //from context
-  const { uploadedImages, setUploadedImages } = useLocationContext();
+  const { uploadedImages, setUploadedImages, handleRefreshServerImages } =
+    useLocationContext();
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    toast.success("Images uploaded successfully!");
+    const missingData = uploadedImages.some((img) => !img.locationData);
+    if (missingData) {
+      toast.error("Please set location data for all images before uploading.");
+      handleAnimateError();
+      return;
+    }
+    const formData = new FormData();
+    formData.append("images", JSON.stringify(uploadedImages));
+    uploadedImages.forEach((image, index) => {
+      if (!image.file) return;
+      if (!image.locationData?.latitude || !image.locationData?.longitude) {
+        toast.error("Location data missing for one or more images.");
+        return;
+      }
+      const ext = image.file.type.split("/")[1];
+      const extension = ext === "jpeg" ? "jpg" : ext;
+
+      const uniqueName = `${image.key}.${extension}`;
+      formData.append("files", image.file, uniqueName); // use key as filename
+    });
+
+    const success = await uploadImages(formData);
+
+    if (success) {
+      setUploadedImages([]);
+      handleRefreshServerImages();
+      toast.success("Images uploaded successfully!");
+    } else {
+      toast.error("Failed to upload images.");
+    }
     handleAnimateError();
   };
 
@@ -31,73 +66,6 @@ export const ImageUploads = () => {
     setUploadedImages((prevImages) =>
       prevImages.filter((img) => img.key !== key)
     );
-  };
-
-  const HandleImageConverter = async (image: TuploadImage) => {
-    const convertedImage = await ImageConverter(image);
-    if (!convertedImage) return;
-    setUploadedImages((prevImages) =>
-      prevImages.map((img) => (img.key === image.key ? convertedImage : img))
-    );
-
-    // return data;
-  };
-
-  const handleImageChange = (e: any) => {
-    const files: File[] = Array.from(e.target.files);
-    const imagePreviews = files.map((file, index) => {
-      const alreadyExists = uploadedImages.some(
-        (existingImg) =>
-          existingImg.file.name === file.name &&
-          existingImg.file.size === file.size &&
-          existingImg.file.lastModified === file.lastModified
-      );
-      if (alreadyExists) {
-        toast.error(`Image is already in the upload list`);
-        return null;
-      }
-
-      if (
-        file.type === "image/png" ||
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg"
-      ) {
-        return {
-          key: file.name + crypto.randomUUID(),
-          converted: true,
-          file,
-          preview: URL.createObjectURL(file),
-          locationData: null,
-        };
-      } else {
-        //file is not jpg, call endpoint and convert
-
-        const convertingImage: TuploadImage = {
-          key: file.name + crypto.randomUUID(),
-          converted: false,
-          file,
-          preview: index.toString(),
-          locationData: null,
-        };
-        HandleImageConverter(convertingImage);
-
-        // return loading placeholder
-        return convertingImage;
-      }
-    });
-    setUploadedImages((prevImages) => [
-      ...prevImages,
-      ...(imagePreviews.filter(Boolean) as TuploadImages),
-    ]);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleUploadImage = () => {
-    fileInputRef.current?.click();
   };
 
   //-------------------------------------Animation and Error Handling-------------------------------------
@@ -123,18 +91,7 @@ export const ImageUploads = () => {
         <div className="h-full ">
           {uploadedImages.length > 0 && <Button type="submit">Upload</Button>}
         </div>
-        <div className="flex">
-          <input
-            id="file-upload"
-            type="file"
-            accept="image/*"
-            name="file-upload"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-            multiple
-            className="hidden"
-          />
-        </div>
+
         <motion.div
           animate={controls}
           className="flex flex-row   justify-center  flex-wrap gap-4  "

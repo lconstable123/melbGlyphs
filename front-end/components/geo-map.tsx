@@ -6,7 +6,8 @@ import { defaultLocation } from "../src/lib/data";
 import toast from "react-hot-toast";
 import type { TuploadImage } from "@/lib/types";
 export const GeoMap = () => {
-  const { uploadedImages, setInspectingImage } = useLocationContext();
+  const { uploadedImages, setInspectingImage, allImages } =
+    useLocationContext();
   const { setMode, mode } = useLocationContext();
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -44,7 +45,7 @@ export const GeoMap = () => {
     markersRef.current = [];
 
     // Add new markers
-    uploadedImages.forEach((img) => {
+    allImages.forEach((img) => {
       if (!img.locationData) return;
       const loc = img.locationData;
       if (
@@ -75,7 +76,7 @@ export const GeoMap = () => {
     <div class="map-popup__image-wrapper">
       <img src="${img.preview}" alt="Image" class="map-popup__image"  />
       <div class="map-popup__fader" ></div>
-      <p class="map-popup__update-details">Update details</p>
+      <p class="map-popup__update-details">Update deets</p>
     </div>
     <div class="map-popup__artist">
       <p>${img.artist ? img.artist : "Unknown Artist"}</p>
@@ -91,6 +92,7 @@ export const GeoMap = () => {
         if (contentEl) {
           contentEl.addEventListener("click", () => {
             handlePopupClick(img); // your click handler
+            popup.remove();
           });
         }
       });
@@ -116,7 +118,7 @@ export const GeoMap = () => {
         });
       }
     }
-  }, [uploadedImages]);
+  }, [uploadedImages, allImages]);
 
   return (
     <div

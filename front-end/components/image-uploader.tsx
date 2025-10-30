@@ -1,41 +1,18 @@
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
-import { UploadCard } from "./upload-card";
-import { ImgSkeleton, LoadingCard } from "./loading-card";
-import { Button } from "../src/components/ui/button";
-import type {
-  TlocationData,
-  TuploadImage,
-  TuploadImages,
-} from "../src/lib/types";
+
+import { ImgSkeleton } from "./loading-card";
+
+import type { TuploadImage, TuploadImages } from "../src/lib/types";
 import { ImageConverter } from "../src/lib/api-utils";
 import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "../src/lib/providers/location-provider";
+import { uploadImages } from "../src/lib/server-utils";
 // import { useLocationContext } from "@/lib/providers/location-provider";
 
-export const ImageForm2 = () => {
+export const ImageUploader = () => {
   //from context
   const { uploadedImages, setUploadedImages, setMode } = useLocationContext();
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    toast.success("Images uploaded successfully!");
-    handleAnimateError();
-  };
-
-  const handleUpdateLocation = (pos: TlocationData, key: string) => {
-    setDisplayError(false);
-    setUploadedImages((prevImages) =>
-      prevImages.map((img) =>
-        img.key === key ? { ...img, locationData: pos } : img
-      )
-    );
-  };
-  const handleDeleteUpload = (key: string) => {
-    setUploadedImages((prevImages) =>
-      prevImages.filter((img) => img.key !== key)
-    );
-  };
 
   const HandleImageConverter = async (image: TuploadImage) => {
     const convertedImage = await ImageConverter(image);
@@ -53,9 +30,9 @@ export const ImageForm2 = () => {
     const imagePreviews = files.map((file, index) => {
       const alreadyExists = uploadedImages.some(
         (existingImg) =>
-          existingImg.file.name === file.name &&
-          existingImg.file.size === file.size &&
-          existingImg.file.lastModified === file.lastModified
+          existingImg.file?.name === file.name &&
+          existingImg.file?.size === file.size &&
+          existingImg.file?.lastModified === file.lastModified
       );
       if (alreadyExists) {
         toast.error(`Image is already in the upload list`);
@@ -67,22 +44,27 @@ export const ImageForm2 = () => {
         file.type === "image/jpeg" ||
         file.type === "image/jpg"
       ) {
+        const key = crypto.randomUUID();
         return {
-          key: file.name + crypto.randomUUID(),
+          key,
           converted: true,
           file,
           preview: URL.createObjectURL(file),
           locationData: null,
+          uploadedAt: new Date().toISOString(),
+          capped: false,
+          fileName: file.name,
         };
       } else {
         //file is not jpg, call endpoint and convert
-
+        const key = crypto.randomUUID();
         const convertingImage: TuploadImage = {
-          key: file.name + crypto.randomUUID(),
+          key,
           converted: false,
           file,
           preview: index.toString(),
           locationData: null,
+          fileName: file.name,
         };
         HandleImageConverter(convertingImage);
 
@@ -121,10 +103,7 @@ export const ImageForm2 = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="h-full  ">
-        {/* <div className="h-full ">
-          {uploadedImages.length > 0 && <Button type="submit">Upload</Button>}
-        </div> */}
+      <div className="h-full  ">
         <div className="flex">
           <input
             id="file-upload"
@@ -140,7 +119,7 @@ export const ImageForm2 = () => {
         <motion.div animate={controls} className=" w-45 h-45     ">
           <ImgSkeleton handleUploadImage={handleUploadImage} />
         </motion.div>
-      </form>
+      </div>
     </>
   );
 };

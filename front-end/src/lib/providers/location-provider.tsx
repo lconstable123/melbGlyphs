@@ -1,5 +1,18 @@
-import { createContext, useContext, useState } from "react";
-import type { TImage, TImages, Tmode, TuploadImages } from "../types";
+import { createContext, useContext, useEffect, useState } from "react";
+import type {
+  TImage,
+  TImages,
+  Tmode,
+  TPartialImage,
+  TuploadImages,
+} from "../types";
+import {
+  DeleteImage,
+  getImagesFromServer,
+  transformServerImageData,
+  UpdateImage,
+} from "../server-utils";
+import { toast } from "react-hot-toast";
 
 type TLocationContext = {
   serverImages: TImages;
@@ -11,6 +24,13 @@ type TLocationContext = {
   setInspectingImage: React.Dispatch<React.SetStateAction<TImage | null>>;
   uploading: boolean;
   setUploading: React.Dispatch<React.SetStateAction<boolean>>;
+  allImages: TImages;
+  handleRefreshServerImages: () => Promise<void>;
+  handleDeleteImage: (key: string) => void;
+  handleUpdateImage: (
+    updatedImage: TPartialImage,
+    key: string
+  ) => Promise<void>;
 };
 
 const LocationContext = createContext<TLocationContext | undefined>(undefined);
@@ -22,9 +42,39 @@ export const LocationProvider = ({
 }) => {
   const [serverImages, setServerImages] = useState<TImages>([]);
   const [uploadedImages, setUploadedImages] = useState<TuploadImages>([]);
+  const allImages = [...serverImages, ...uploadedImages];
   const [mode, setMode] = useState<Tmode>("initial");
   const [uploading, setUploading] = useState<boolean>(false);
   const [inspectingImage, setInspectingImage] = useState<TImage | null>(null);
+
+  const handleRefreshServerImages = async () => {
+    try {
+      const images = await getImagesFromServer();
+      toast.success("Server images refreshed");
+      const transformedImages = transformServerImageData(images);
+      setServerImages(transformedImages);
+    } catch (error) {
+      toast.error("Failed to refresh server images");
+    }
+  };
+
+  const handleDeleteImage = async (key: string) => {
+    await DeleteImage(key);
+    setInspectingImage(null);
+    handleRefreshServerImages();
+  };
+
+  const handleUpdateImage = async (
+    updatedImage: TPartialImage,
+    key: string
+  ) => {
+    await UpdateImage(updatedImage, key);
+    handleRefreshServerImages();
+  };
+
+  useEffect(() => {
+    handleRefreshServerImages();
+  }, []);
 
   return (
     <LocationContext.Provider
@@ -38,6 +88,10 @@ export const LocationProvider = ({
         setUploading,
         inspectingImage,
         setInspectingImage,
+        allImages,
+        handleRefreshServerImages,
+        handleDeleteImage,
+        handleUpdateImage,
       }}
     >
       {children}

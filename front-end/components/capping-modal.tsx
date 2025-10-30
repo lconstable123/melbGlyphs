@@ -22,14 +22,14 @@ import {
 import { ChevronDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export const ArtistModal = ({
-  artist,
-  handleSetArtist,
+export const CappingModal = ({
+  handleSetCapping,
   style = "outside",
+  iscapped,
 }: {
-  // Imagekey: string;
-  artist: string | null;
-  handleSetArtist: (artist: string | null) => void;
+  imagekey: string;
+  iscapped: string | null;
+  handleSetCapping: (iscapped: string | null) => void;
   style: "outside" | "window";
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,8 +39,8 @@ export const ArtistModal = ({
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        if (!open && artist) {
-          handleSetArtist(artist);
+        if (!open && iscapped) {
+          handleSetCapping(iscapped);
         }
         setIsOpen(open);
       }}
@@ -56,14 +56,16 @@ export const ArtistModal = ({
              transition-all duration-400 text-sm  px-2 py-1 rounded-md  `}
         >
           {/* <Button size="sm" variant="onImage" accessability={false}> */}
-          {artist !== null ? artist : "Tag Artist"}
+          {iscapped !== "" && iscapped !== null
+            ? "Capped by " + iscapped
+            : "Capped?"}
           {/* </Button> */}
         </p>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-black   py-10">
         <DialogHeader>
           <DialogTitle className=" text-sm flex justify-between">
-            <p className="select-none">Tag an artist</p>
+            <p className="select-none">Who has capped</p>
             <p
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="select-none cursor-pointer"
@@ -76,8 +78,8 @@ export const ArtistModal = ({
               <Input
                 type="text"
                 aria-label="Artist-dropdown-button"
-                value={artist || ""}
-                onChange={(e) => handleSetArtist(e.target.value)}
+                value={iscapped || ""}
+                onChange={(e) => handleSetCapping(e.target.value)}
                 placeholder="Add Artist"
                 className="relative border-0!  z-1000"
               />
@@ -98,9 +100,9 @@ export const ArtistModal = ({
               <Select
                 open={isDropdownOpen}
                 onOpenChange={setIsDropdownOpen}
-                value={artist ? artist : ""}
+                value={iscapped ? iscapped : ""}
                 onValueChange={(value) => {
-                  handleSetArtist(value);
+                  handleSetCapping(value);
                 }}
               >
                 <SelectTrigger className="absolute w-full h-full "></SelectTrigger>
@@ -114,7 +116,7 @@ export const ArtistModal = ({
                       key={artist + index}
                       value={artist}
                       onClick={() => {
-                        handleSetArtist(artist);
+                        handleSetCapping(artist);
                       }}
                     >
                       {artist}

@@ -7,6 +7,8 @@ import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "@/lib/providers/location-provider";
 
 import { ImageCloser } from "./image-closer";
+import { cn } from "@/lib/utils";
+import { useFetchLocation } from "@/lib/hooks/useFetchLocation";
 export const UploadCard = ({
   image,
   setGlobalLocation,
@@ -26,14 +28,14 @@ export const UploadCard = ({
   const location = image.locationData;
 
   const errorControls = useAnimation();
-
-  const handleSetUploadedSuburb = (suburb: string) => {
-    setUploadedImages((previmages) =>
-      previmages.map((img) =>
-        img.key === image.key ? { ...img, suburb: suburb } : img
-      )
-    );
-  };
+  useFetchLocation(image.key, location, "upload");
+  // const handleSetUploadedSuburb = (suburb: string) => {
+  //   setUploadedImages((previmages) =>
+  //     previmages.map((img) =>
+  //       img.key === image.key ? { ...img, suburb: suburb } : img
+  //     )
+  //   );
+  // };
   const handleSetUploadedArtist = (artist: string | null) => {
     setUploadedImages((previmages) =>
       previmages.map((img) =>
@@ -56,21 +58,21 @@ export const UploadCard = ({
     }, 2000);
   };
 
-  useEffect(() => {
-    // toast.success("suburb finding...");
-    const fetchSuburb = async () => {
-      if (location) {
-        const suburb = await fetchSuburbFromCoords(
-          location.latitude,
-          location.longitude
-        );
-        if (suburb) {
-          handleSetUploadedSuburb(suburb);
-        }
-      }
-    };
-    fetchSuburb();
-  }, [location]);
+  // useEffect(() => {
+  //   // toast.success("suburb finding...");
+  //   const fetchSuburb = async () => {
+  //     if (location) {
+  //       const suburb = await fetchSuburbFromCoords(
+  //         location.latitude,
+  //         location.longitude
+  //       );
+  //       if (suburb) {
+  //         handleSetUploadedSuburb(suburb);
+  //       }
+  //     }
+  //   };
+  //   fetchSuburb();
+  // }, [location]);
 
   useEffect(() => {
     if (displayError) {
@@ -104,11 +106,23 @@ export const UploadCard = ({
           alt={image.preview}
           className="select-none w-50 h-50 rounded-md object-cover "
         />
-        <LocationModal
-          setGlobalLocation={setGlobalLocation}
-          Imagekey={image.key}
-          location={location}
-        />
+        <div
+          className={cn(
+            "absolute inset-0 transition-all duration-400   ",
+            image.locationData === null
+              ? "opacity-100 "
+              : "opacity-0 group-hover:opacity-100"
+          )}
+        >
+          <div className="absolute bottom-2 left-1/2  -translate-x-1/2">
+            <LocationModal
+              style="outside"
+              setGlobalLocation={setGlobalLocation}
+              imagekey={image.key}
+              location={location}
+            />
+          </div>
+        </div>
       </div>
       <div
         id="location-info"
@@ -116,7 +130,7 @@ export const UploadCard = ({
       >
         <div id="location-details" className="flex flex-col   items-center">
           <ArtistModal
-            Imagekey={image.key}
+            style="outside"
             artist={artist}
             handleSetArtist={handleSetUploadedArtist}
           />

@@ -60,6 +60,7 @@ export const fetchSuburbFromCoords = async (
 
 export const ImageConverter = async (image: TuploadImage) => {
   const formData = new FormData();
+  if (!image.file) return;
   formData.append("image", image.file);
   const apiUrl = import.meta.env.VITE_API_URL!;
 
@@ -80,6 +81,7 @@ export const ImageConverter = async (image: TuploadImage) => {
     file: image.file,
     preview: `data:${data.image.mimeType};base64,${data.image.data}`,
     locationData: await extractLocationData(image.file),
+    fileName: image.fileName.split(".")[0] + ".jpg",
   };
   return convertedImage;
 };

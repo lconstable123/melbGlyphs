@@ -14,11 +14,12 @@ h1 {
 
 .suse-mono,
 p {
+  font-family: "Permanent Marker", cursive;
   font-family: "SUSE Mono", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 300;
+  font-weight: 500;
   font-style: normal;
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.05rem;
   line-height: 1rem;
 }
 .font-bolder {
@@ -27,7 +28,8 @@ p {
 
 .saira-stencil,
 h2 {
-  font-family: "Saira Stencil One", sans-serif;
+  /* font-family: "Saira Stencil One", sans-serif; */
+  font-family: "Permanent Marker", cursive;
   font-weight: 700;
   font-style: normal;
   letter-spacing: 0.05rem;
@@ -40,7 +42,7 @@ h2 {
 }
 
 .hover-outline {
-  @apply transition-all duration-300 outline-1 hover:outline-fuchsia-500 outline-fuchsia-500/0;
+  @apply transition-all duration-300 outline-1 hover:outline-fuchsia-500 outline-fuchsia-500/30;
 }
 
 #root {
@@ -58,6 +60,12 @@ h2 {
 
 .bg-primary {
   @apply bg-neutral-700;
+}
+.bg-saImg {
+  background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.97)),
+    /* black overlay */ url("sa.jpg");
+  background-size: cover;
+  backgorund-position: center;
 }
 
 .logo {
@@ -110,6 +118,9 @@ h2 {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid oklch(66.7% 0.295 132.15);
 }
 .map-popup__update-details {
   position: absolute;
@@ -118,8 +129,9 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: black;
+  color: white;
   font-weight: 600;
+
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -137,7 +149,7 @@ h2 {
 .map-popup__fader {
   position: absolute;
   inset: 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.7);
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 2;

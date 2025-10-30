@@ -15,16 +15,19 @@ import {
   DialogTrigger,
 } from "../src/components/ui/dialog";
 import type { TlocationData } from "../src/lib/types";
+import toast from "react-hot-toast";
 
 export const LocationModal = ({
   location,
   setGlobalLocation,
-  Imagekey,
+  imagekey,
+  style = "outside",
 }: {
   location: TlocationData | null;
 
   setGlobalLocation: (pos: TlocationData, id: string) => void;
-  Imagekey: string;
+  imagekey: string;
+  style: "outside" | "window";
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
@@ -41,7 +44,9 @@ export const LocationModal = ({
   };
 
   const handleSetGlobalLocation = (pos: TlocationData) => {
-    setGlobalLocation(pos, Imagekey);
+    // toast.success("Location updated!");
+
+    setGlobalLocation(pos, imagekey);
   };
 
   const handleSetModalLocation = (pos: TlocationData) => {
@@ -52,6 +57,9 @@ export const LocationModal = ({
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
+        toast.success(
+          open ? "Opened location selector" : "Closed location selector"
+        );
         if (!open && localLocation) {
           handleSetGlobalLocation(localLocation);
           setAllowSearch(false);
@@ -63,16 +71,12 @@ export const LocationModal = ({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className=" cursor-pointer group h-full w-full absolute inset-0  "
+        className=" cursor-pointer group h-full w-full  "
       >
         <div
           className={`
-            group-hover:outline-1 rounded-lg outline-fuchsia-500/40
-            ${
-              location === null
-                ? "opacity-100 "
-                : "opacity-0 group-hover:opacity-100"
-            } transition-all duration-400 absolute bottom-2 left-1/2  -translate-x-1/2 `}
+           hover-outline rounded-lg outline-fuchsia-500/40
+          `}
         >
           <Button role="button" type="button" size="sm" variant="onImage">
             {location !== null ? "Edit Location" : "Select Location"}

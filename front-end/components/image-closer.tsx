@@ -1,11 +1,14 @@
+import { cn } from "@/lib/utils";
 import { IoMdCloseCircle } from "react-icons/io";
 
 export const ImageCloser = ({
   handleClick,
   ImageKey,
+  type = "map",
 }: {
   handleClick: (key?: string) => void;
   ImageKey?: string;
+  type?: "map" | "inspector";
 }) => {
   return (
     <i
@@ -23,7 +26,10 @@ export const ImageCloser = ({
           }
         }}
         role="button"
-        className="focus:ring-1 text-black focus:ring-offset-0  hover:scale-110 scale-100 w-5 h-5 drop-shadow shadow-lg "
+        className={cn(
+          `focus:ring-1 text-black focus:ring-offset-0  hover:scale-110 scale-100 w-5 h-5 drop-shadow shadow-lg `,
+          type === "map" ? "w-5 h-5 " : "w-7 h-7 sm:w-5 sm:h-5 "
+        )}
       />
     </i>
   );

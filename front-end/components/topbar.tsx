@@ -1,35 +1,25 @@
 import { useLocationContext } from "../src/lib/providers/location-provider";
 import { Button } from "../src/components/ui/button";
-import { ImageUploader } from "./image-uploader";
+
 import { cn } from "../src/lib/utils";
 import { IoMdCloseCircle } from "react-icons/io";
-export const SplashScreen = () => {
+export const TopBar = () => {
   const { setMode, mode } = useLocationContext();
   return (
     <div
-      id="splash-screen"
+      id="top-bar"
       className={cn(
-        "transition-all flex flex-col gap-y-2    w-full  items-center justify-center",
-        mode === "initial"
-          ? "bg-black/60 h-full"
-          : "bg-black-0 h-full lg:h-auto"
+        "transition-all flex  gap-2 bg-black  px-5 py-2  h-auto text-sm   w-full  items-center justify-center",
+        mode === "initial" ? "" : ""
       )}
     >
-      <div
-        id="splash-contnent"
-        className="flex flex-col items-center gap-y-10  "
-      >
-        <div className="flex flex-row gap-2">
-          <div
-            id="splash-text"
-            className="flex  flex-col pointer-events-none select-none  text-neutral-10 gap-y-2  max-w-screen lg:max-w-[1300px] items-center text-center px-0 lg:px-4"
-          >
-            <InfoPanel />
-
-            {/* <MoreDetails /> */}
-          </div>
-        </div>
-      </div>
+      <h1 className={cn("   font-bold  text-neutral-50")}>
+        Melbourne Street Project
+      </h1>
+      <span className="flex flex-col sm:flex-row ml-auto text-[9pt]  items-center justify-center gap-0 sm:gap-2 ">
+        <h2 className="uppercase underline  ">@VirtuallyAnything.xyz.</h2>
+        <p className="font-medium font-bolder">V.0.0.1</p>
+      </span>
     </div>
   );
 };
@@ -43,7 +33,7 @@ const Banner = ({ size }: { size: "small" | "large" }) => {
     >
       <h1
         className={cn(
-          "   font-bold max-w-150 color-emphasis ",
+          "   font-bold max-w-150  text-neutral-50",
           size === "large" ? "text-5xl  leading-15 " : "text-3xl"
         )}
       >
@@ -64,7 +54,7 @@ const InfoPanel = () => {
   const { setMode } = useLocationContext();
   return (
     <div className="flex flex-col   justify-center items-center  h-screen lg:max-w-400">
-      <div className="flex pointer-events-auto  relative border-3 border-neutral-700 flex-col lg:flex-row  h-full lg:h-auto px-10 py-10  items-center rounded-lg bg-saImg     justify-center">
+      <div className="flex  relative border-3 border-neutral-700 flex-col lg:flex-row  h-full lg:h-auto px-10 py-10  items-center rounded-lg    bg-black justify-center">
         <IoMdCloseCircle
           className="absolute top-4 right-4 w-10 h-10 cursor-pointer"
           onClick={() => setMode("explore")}
@@ -74,10 +64,12 @@ const InfoPanel = () => {
           alt="QR code"
           className="hidden lg:block h-45 w-45 aspect-square object-contain "
         />
-        <div className="p-5 text-neutral-300  ">
+        <div className="p-5  ">
           <Banner size="large" />
           <span className="flex  items-center justify-center gap-2 mb-2">
-            <h2 className="uppercase underline  ">@VirtuallyAnything.xyz.</h2>
+            <h2 className="uppercase underline color-emphasis ">
+              @VirtuallyAnything.xyz.
+            </h2>
             <p className="font-medium font-bolder">V.0.0.1</p>
           </span>
 
@@ -93,7 +85,7 @@ const InfoPanel = () => {
             alt="QR code"
             className="block lg:hidden h-45 aspect-square object-contain border "
           /> */}
-          <ImageUploader />
+          {/* <ImageForm2 /> */}
         </div>
       </div>
       {/* <EnterButton /> */}
@@ -103,7 +95,7 @@ const InfoPanel = () => {
 
 const MoreDetails = () => {
   return (
-    <div className="flex text-sm     flex-col items-center gap-2 text-neutral-300 text-center mt-7">
+    <div className="flex text-sm     flex-col items-center gap-2 text-neutral-300  text-center mt-7">
       <p className="">
         <span className="">Accepts all image types:</span> apple .heif images
         are also supported.
