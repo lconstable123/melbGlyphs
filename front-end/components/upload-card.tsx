@@ -1,4 +1,4 @@
-import { fetchSuburbFromCoords } from "../src/lib/api-utils";
+// import { fetchSuburbFromCoords } from "../src/lib/api-utils";
 import type { TlocationData, TuploadImage } from "../src/lib/types";
 import { useEffect } from "react";
 import { LocationModal } from "./location-modal";
@@ -28,18 +28,12 @@ export const UploadCard = ({
   const location = image.locationData;
 
   const errorControls = useAnimation();
-  useFetchLocation(image.key, location, "upload");
-  // const handleSetUploadedSuburb = (suburb: string) => {
-  //   setUploadedImages((previmages) =>
-  //     previmages.map((img) =>
-  //       img.key === image.key ? { ...img, suburb: suburb } : img
-  //     )
-  //   );
-  // };
+  // useFetchLocation(image.id, location, "upload");
+
   const handleSetUploadedArtist = (artist: string | null) => {
     setUploadedImages((previmages) =>
       previmages.map((img) =>
-        img.key === image.key ? { ...img, artist: artist } : img
+        img.id === image.id ? { ...img, artist: artist } : img
       )
     );
   };
@@ -57,22 +51,10 @@ export const UploadCard = ({
       });
     }, 2000);
   };
-
-  // useEffect(() => {
-  //   // toast.success("suburb finding...");
-  //   const fetchSuburb = async () => {
-  //     if (location) {
-  //       const suburb = await fetchSuburbFromCoords(
-  //         location.latitude,
-  //         location.longitude
-  //       );
-  //       if (suburb) {
-  //         handleSetUploadedSuburb(suburb);
-  //       }
-  //     }
-  //   };
-  //   fetchSuburb();
-  // }, [location]);
+  const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL!;
+  const absoluteUrl = image.isOnServer
+    ? `${VITE_SERVER_URL}${image.path}`
+    : image.path;
 
   useEffect(() => {
     if (displayError) {
@@ -97,13 +79,13 @@ export const UploadCard = ({
         />
 
         <ImageCloser
-          handleClick={() => handleDeleteUpload(image.key)}
-          ImageKey={image.key}
+          handleClick={() => handleDeleteUpload(image.id)}
+          ImageKey={image.id}
         />
 
         <img
-          src={image.preview as string}
-          alt={image.preview}
+          src={absoluteUrl}
+          alt={image.path}
           className="select-none w-50 h-50 rounded-md object-cover "
         />
         <div
@@ -118,7 +100,7 @@ export const UploadCard = ({
             <LocationModal
               style="outside"
               setGlobalLocation={setGlobalLocation}
-              imagekey={image.key}
+              imagekey={image.id}
               location={location}
             />
           </div>

@@ -50,6 +50,7 @@ export const LocationModal = ({
   };
 
   const handleSetModalLocation = (pos: TlocationData) => {
+    // toast.success("local Location updated!");
     setLocalLocation(pos);
   };
 

@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import { fetchSuburbFromCoords } from "../api-utils";
+// import { fetchSuburbFromCoords } from "../api-utils";
 import { useLocationContext } from "../providers/location-provider";
 import type { TlocationData, TuploadImage } from "../types";
 import { toast } from "react-hot-toast";
-
+import { useQuery } from "@apollo/client/react";
+import { REVERSE_GEOCODE } from "../gql-utils";
 export const useFetchLocation = (
   imageKey: string,
   location: TlocationData | null,
@@ -17,7 +18,7 @@ export const useFetchLocation = (
     } else {
       setUploadedImages((previmages) =>
         previmages.map((img) =>
-          img.key === imageKey ? { ...img, suburb: suburb } : img
+          img.id === imageKey ? { ...img, suburb: suburb } : img
         )
       );
     }
@@ -27,13 +28,26 @@ export const useFetchLocation = (
     // toast.success("suburb finding...");
     const fetchSuburb = async () => {
       if (location) {
-        const suburb = await fetchSuburbFromCoords(
-          location.latitude,
-          location.longitude
-        );
-        // toast.success(`fetched suburb...${suburb}`);
+        // const suburb = await fetchSuburbFromCoords(
+        //   location.latitude,
+        //   location.longitude
+        // );
+        // const { data: suburb } = await fetchSuburbFromCoords(
+        //   location.latitude,
+        //   location.longitude
+        // );
+        const { data: suburb } = useQuery(REVERSE_GEOCODE, {
+          variables: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          },
+        });
+
+        console.log(suburb); // This will be the returned suburb string
+
+        toast.success(`fetched suburb...${suburb}`);
         if (suburb) {
-          handleSetUploadedSuburb(suburb);
+          // handleSetUploadedSuburb(suburb);
         }
       }
     };

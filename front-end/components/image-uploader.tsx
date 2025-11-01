@@ -18,7 +18,7 @@ export const ImageUploader = () => {
     const convertedImage = await ImageConverter(image);
     if (!convertedImage) return;
     setUploadedImages((prevImages) =>
-      prevImages.map((img) => (img.key === image.key ? convertedImage : img))
+      prevImages.map((img) => (img.id === image.id ? convertedImage : img))
     );
 
     // return data;
@@ -42,29 +42,32 @@ export const ImageUploader = () => {
       if (
         file.type === "image/png" ||
         file.type === "image/jpeg" ||
-        file.type === "image/jpg"
+        file.type === "image/jpg" ||
+        file.type === "image/tif"
       ) {
-        const key = crypto.randomUUID();
+        const id = crypto.randomUUID();
         return {
-          key,
+          id,
           converted: true,
           file,
-          preview: URL.createObjectURL(file),
+          // preview: URL.createObjectURL(file),
           locationData: null,
           uploadedAt: new Date().toISOString(),
           capped: false,
-          fileName: file.name,
+          path: URL.createObjectURL(file),
+          isOnServer: false,
         };
       } else {
         //file is not jpg, call endpoint and convert
-        const key = crypto.randomUUID();
+        const id = crypto.randomUUID();
         const convertingImage: TuploadImage = {
-          key,
+          id,
           converted: false,
           file,
-          preview: index.toString(),
+          // preview: index.toString(),
           locationData: null,
-          fileName: file.name,
+          path: file.name,
+          isOnServer: false,
         };
         HandleImageConverter(convertingImage);
 

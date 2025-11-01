@@ -1,5 +1,5 @@
 import { toast } from "react-hot-toast";
-import type { TImage, TImages } from "./types";
+import type { TGQLGetImages, TImage, TImages } from "./types";
 
 export const uploadImages = async (data: FormData): Promise<boolean> => {
   // const apiUrl = import.meta.env.VITE_API_URL!;
@@ -39,21 +39,27 @@ export const getImagesFromServer = async () => {
   }
 };
 
-export const transformServerImageData = (serverImages: any[]): TImages => {
+export const transformServerImageData = (
+  serverImages: TGQLGetImages
+): TImages => {
   const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL!;
-  return serverImages.map((img) => {
-    const absoluteFilePath = `${VITE_SERVER_URL}${img.filePath}`;
+  return serverImages.images.map((img) => {
+    const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL!;
+    const absoluteUrl = img.isOnServer
+      ? `${VITE_SERVER_URL}${img.path}`
+      : img.path;
 
     return {
       artist: img.artist || null,
-      key: img.id,
+      id: img.id,
       converted: true,
-      preview: absoluteFilePath,
       locationData: img.locationData || null,
       suburb: img.suburb || null,
       uploadedAt: img.uploadedAt,
       capped: img.capped || false,
-      fileName: img.filePath,
+
+      isOnServer: true,
+      path: absoluteUrl,
     } as TImage;
   });
 };

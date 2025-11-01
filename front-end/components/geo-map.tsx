@@ -4,7 +4,7 @@ import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN!;
 import { defaultLocation } from "../src/lib/data";
 import toast from "react-hot-toast";
-import type { TuploadImage } from "@/lib/types";
+import type { TImage, TuploadImage } from "@/lib/types";
 export const GeoMap = () => {
   const { uploadedImages, setInspectingImage, allImages } =
     useLocationContext();
@@ -12,7 +12,7 @@ export const GeoMap = () => {
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const handlePopupClick = (img: TuploadImage) => {
+  const handlePopupClick = (img: TImage) => {
     setInspectingImage(img);
   };
 
@@ -54,12 +54,17 @@ export const GeoMap = () => {
         typeof loc.latitude !== "number"
       )
         return;
+      const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL!;
+      const absoluteUrl = img.isOnServer
+        ? `${VITE_SERVER_URL}${img.path}`
+        : img.path;
+
       // Custom marker element
       const markerEl = document.createElement("div");
       markerEl.className = "custom-marker";
       markerEl.style.width = "40px";
       markerEl.style.height = "40px";
-      markerEl.style.backgroundImage = `url(${img.preview})`;
+      markerEl.style.backgroundImage = `url(${absoluteUrl})`;
       markerEl.style.backgroundSize = "cover";
       markerEl.style.border = "3px solid black";
       // markerEl.style.borderRadius = "30%";
@@ -74,7 +79,7 @@ export const GeoMap = () => {
   
   class="map-popup__content">
     <div class="map-popup__image-wrapper">
-      <img src="${img.preview}" alt="Image" class="map-popup__image"  />
+      <img src="${absoluteUrl}" alt="Image" class="map-popup__image"  />
       <div class="map-popup__fader" ></div>
       <p class="map-popup__update-details">Update deets</p>
     </div>

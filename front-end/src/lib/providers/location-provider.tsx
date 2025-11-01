@@ -5,6 +5,11 @@ import type {
   Tmode,
   TPartialImage,
   TuploadImages,
+  TGQLGetImages,
+  TGQLUpdateImageVars,
+  TGQLUpdateImage,
+  TGQLDeleteImageVars,
+  TGQLDeleteImage,
 } from "../types";
 import {
   DeleteImage,
@@ -13,7 +18,15 @@ import {
   UpdateImage,
 } from "../server-utils";
 import { toast } from "react-hot-toast";
-
+import { useMutation, useQuery } from "@apollo/client/react";
+// import { useMutation } from '@apollo/client';
+import {
+  GET_IMAGES,
+  ADD_IMAGES,
+  // DELETE_IMAGE,
+  UPDATE_IMAGE,
+  DELETE_IMAGE,
+} from "../gql-utils";
 type TLocationContext = {
   serverImages: TImages;
   uploadedImages: TuploadImages;
@@ -42,24 +55,50 @@ export const LocationProvider = ({
 }) => {
   const [serverImages, setServerImages] = useState<TImages>([]);
   const [uploadedImages, setUploadedImages] = useState<TuploadImages>([]);
-  const allImages = [...serverImages, ...uploadedImages];
+  const allImages = [
+    ...serverImages,
+    ...uploadedImages.map(({ converted, ...rest }) => rest),
+  ];
   const [mode, setMode] = useState<Tmode>("initial");
   const [uploading, setUploading] = useState<boolean>(false);
   const [inspectingImage, setInspectingImage] = useState<TImage | null>(null);
 
+  const { data, loading, error, refetch } = useQuery<TGQLGetImages>(GET_IMAGES);
+  const [addImages, { loading: addLoading, error: addError, data: addData }] =
+    useMutation(ADD_IMAGES);
+  const [
+    deleteImage,
+    { loading: deleteLoading, error: deleteError, data: deleteData },
+  ] = useMutation<TGQLDeleteImage, TGQLDeleteImageVars>(DELETE_IMAGE);
+  const [
+    updateImage,
+    { loading: updateLoading, error: updateError, data: updateData },
+  ] = useMutation<TGQLUpdateImage, TGQLUpdateImageVars>(UPDATE_IMAGE);
+
   const handleRefreshServerImages = async () => {
     try {
-      const images = await getImagesFromServer();
+      // const images = await getImagesFromServer();
+      // const images = images;
+      const { data: images } = await refetch();
       toast.success("Server images refreshed");
-      const transformedImages = transformServerImageData(images);
-      setServerImages(transformedImages);
+      console.log("Fetched images from server:", images);
+      // const transformedImages = transformServerImageData(images || []);
+      // console.log("Transformed images:", transformedImages);
+      setServerImages(images?.images || []);
     } catch (error) {
       toast.error("Failed to refresh server images");
     }
   };
 
   const handleDeleteImage = async (key: string) => {
-    await DeleteImage(key);
+    // await DeleteImage(key);
+    toast.success("Deleting image...");
+    const result = await deleteImage({ variables: { id: key } });
+    if (!result.data?.deleteImage?.success) {
+      toast.error("Failed to delete image");
+      return;
+    }
+    toast.success("Image deleted successfully");
     setInspectingImage(null);
     handleRefreshServerImages();
   };
@@ -68,7 +107,18 @@ export const LocationProvider = ({
     updatedImage: TPartialImage,
     key: string
   ) => {
-    await UpdateImage(updatedImage, key);
+    //  await UpdateImage(updatedImage, key);'
+    toast.success("Updating image... key:" + key + "Data:");
+    console.log("Updating image with ID:", key, "Data:", updatedImage);
+    const result = await updateImage({
+      variables: { id: key, updatedData: updatedImage },
+    });
+
+    if (!result.data?.updateImage?.success) {
+      toast.error("Failed to update image");
+      return;
+    }
+    toast.success("Image updated successfully");
     handleRefreshServerImages();
   };
 

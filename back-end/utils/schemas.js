@@ -11,28 +11,13 @@ export const locationSchema = z.object({
 
 export const imageObjectSchema = z.object({
   id: z.uuid().optional(),
-  // preview: z.string().min(1),
   artist: z.string().nullable(),
   locationData: locationSchema,
   suburb: z.string().optional(),
   uploadedAt: z.string({ message: "uploadedAt is required" }),
   capped: z.string({ message: "capped is required" }).nullable(),
-  // file: z.string().nullable(),
-  filePath: z.string().min(1, "filePath is required"),
-  //   file: z
-  //     .any()
-  //     .refine((file) => file && Buffer.isBuffer(file.buffer), {
-  //       message: "File must have a valid buffer",
-  //     })
-  //     .refine(
-  //       (file) =>
-  //         file?.mimetype === "image/png" ||
-  //         file?.mimetype === "image/jpeg" ||
-  //         file?.mimetype === "image/jpg" ||
-  //         file?.mimetype === "image/pjpeg",
-  //       { message: "File must be a PNG or JPG image" }
-  //     ),
-  // });
+  path: z.string({ message: "path is required" }).min(1, "path is required"),
+  isOnServer: z.boolean({ message: "isOnServer is required" }),
 });
 
 export const imageObjectsSchema = z.array(imageObjectSchema);

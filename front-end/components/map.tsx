@@ -1,5 +1,5 @@
-import { queryLocation } from "@/lib/api-utils";
-import type { Tcoordinates, TlocationData } from "@/lib/types";
+import { queryLocation } from "../src/lib/api-utils";
+import type { Tcoordinates, TlocationData } from "../src/lib/types";
 import { useEffect, useState } from "react";
 import { defaultLocation } from "../src/lib/data";
 import {
@@ -9,6 +9,7 @@ import {
   Popup,
   useMapEvents,
 } from "react-leaflet";
+import toast from "react-hot-toast";
 export const Map = ({
   text,
   handleSetLocation,
@@ -36,8 +37,8 @@ export const Map = ({
 
   const handleSearch = async (query: string) => {
     if (!allowSearch) return;
-
-    //api query for coords
+    // toast.success(`Searching for location: ${query}`);
+    // api query for coords
     const data = await queryLocation(query);
     const location: Tcoordinates = [
       parseFloat(data[0].lat),
@@ -51,11 +52,36 @@ export const Map = ({
     return { latitude: loc[0], longitude: loc[1] };
   };
 
-  function ClickHandler({ onClick }: { onClick: (pos: Tcoordinates) => void }) {
+  // useEffect(() => {
+  //   toast.success(
+  //     `Cursor position updated: [${cursorPosition?.[0].toFixed(
+  //       4
+  //     )}, ${cursorPosition?.[1].toFixed(4)}]`
+  //   );
+  // }, [cursorPosition]);
+
+  function ClickHandler({
+    onClick,
+    handleSetLocation,
+  }: {
+    onClick: (pos: Tcoordinates) => void;
+    handleSetLocation: (pos: TlocationData) => void;
+  }) {
+    const parseLoc = (loc: Tcoordinates) => ({
+      latitude: loc[0],
+      longitude: loc[1],
+    });
+
     useMapEvents({
       click(e) {
         onClick([e.latlng.lat, e.latlng.lng]);
-        handleSetLocation(ParseAsLocationObject([e.latlng.lat, e.latlng.lng]));
+        // toast.success(
+        //   `Location selected: [${e.latlng.lat.toFixed(
+        //     4
+        //   )}, ${e.latlng.lng.toFixed(4)}]`
+        // );
+        const coords: Tcoordinates = [e.latlng.lat, e.latlng.lng];
+        handleSetLocation(parseLoc(coords));
       },
     });
     return null;
@@ -92,14 +118,14 @@ export const Map = ({
     }
   }, [startingLocation]);
 
-  //   //if location is null, enable searching, if not, disable searching
-  //   useEffect(() => {
-  //     if (startingLocation) {
-  //       setAllowSearch(false);
-  //     } else {
-  //       setAllowSearch(true);
-  //     }
-  //   }, [startingLocation]);
+  //if location is null, enable searching, if not, disable searching
+  // useEffect(() => {
+  //   if (startingLocation) {
+  //     setAllowSearch(false);
+  //   } else {
+  //     setAllowSearch(true);
+  //   }
+  // }, [startingLocation]);
 
   return (
     <div className="w-full  h-full bg-gray-500">
@@ -115,9 +141,12 @@ export const Map = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
+        <ClickHandler
+          onClick={setCursorPosition}
+          handleSetLocation={handleSetLocation}
+        />
         {selectedPosition && (
           <Marker position={cursorPosition || selectedPosition}>
-            <ClickHandler onClick={setCursorPosition} />
             <Popup>Selected Location</Popup>
           </Marker>
         )}

@@ -3,12 +3,12 @@ import { ArtistModal } from "./artist-modal";
 import { ImageCloser } from "./image-closer";
 import { LocationModal } from "./location-modal";
 import { CappingModal } from "./capping-modal";
-import { Button } from "@/components/ui/button";
-import type { TlocationData, TuploadImage } from "@/lib/types";
+import { Button } from "../src/components/ui/button";
+import type { TlocationData, TuploadImage } from "../src/lib/types";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
-import type { p } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
-import { useFetchLocation } from "@/lib/hooks/useFetchLocation";
+// import type { p } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
+// import { useFetchLocation } from "@/lib/hooks/useFetchLocation";
 export const ImageInspector = () => {
   const {
     inspectingImage,
@@ -18,23 +18,23 @@ export const ImageInspector = () => {
   } = useLocationContext();
 
   const handleUpdateLocation = (pos: TlocationData) => {
-    toast.success("Location updated to " + JSON.stringify(pos));
+    // toast.success("Location updated to " + JSON.stringify(pos));
     setInspectingImage((prev) => {
       if (!prev) return prev;
       return { ...prev, locationData: pos };
     });
 
-    handleUpdateImage({ locationData: pos }, inspectingImage!.key);
+    handleUpdateImage({ locationData: pos }, inspectingImage!.id);
     // setTempLocation(pos);
   };
-  useFetchLocation(
-    inspectingImage!.key,
-    inspectingImage ? inspectingImage.locationData : null,
-    "server"
-  );
+  // useFetchLocation(
+  //   inspectingImage!.id,
+  //   inspectingImage ? inspectingImage.locationData : null,
+  //   "server"
+  // );
   const handleUpdateArtist = (artist: string | null) => {
     toast.success("Artist updated to " + artist);
-    handleUpdateImage({ artist: artist }, inspectingImage!.key);
+    handleUpdateImage({ artist: artist }, inspectingImage!.id);
     setInspectingImage((prev) => {
       if (!prev) return prev;
       return { ...prev, artist: artist };
@@ -43,12 +43,16 @@ export const ImageInspector = () => {
 
   const handleUpdateCapping = (iscapped: string | null) => {
     toast.success("Capping status updated to " + iscapped);
-    handleUpdateImage({ capped: iscapped }, inspectingImage!.key);
+    handleUpdateImage({ capped: iscapped }, inspectingImage!.id);
     setInspectingImage((prev) => {
       if (!prev) return prev;
       return { ...prev, capped: iscapped };
     });
   };
+  const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL!;
+  const absoluteUrl = inspectingImage!.isOnServer
+    ? `${VITE_SERVER_URL}${inspectingImage!.path}`
+    : inspectingImage!.path;
 
   return (
     <div className=" border-0 sm:border border-fuchsia-500 w-full sm:w-100 h-full sm:h-auto pb-2 pointer-events-auto  absolute top-0 sm:top-30 z-600 right-0 sm:right-10  bg-black text-white   overflow-auto">
@@ -59,13 +63,9 @@ export const ImageInspector = () => {
             handleClick={() => {
               setInspectingImage(null);
             }}
-            ImageKey={inspectingImage.key}
+            ImageKey={inspectingImage.id}
           />
-          <img
-            src={inspectingImage.preview}
-            alt="Image"
-            className="w-full h-full "
-          />
+          <img src={absoluteUrl} alt="Image" className="w-full h-full " />
 
           <div className="relative flex justify-center gap-4 mx-5   items-center mt-5 sm:mt-2">
             <div className="w-50">
@@ -78,7 +78,7 @@ export const ImageInspector = () => {
             <div className="w-50 ">
               <LocationModal
                 style="window"
-                imagekey={inspectingImage.key}
+                imagekey={inspectingImage.id}
                 location={inspectingImage.locationData}
                 setGlobalLocation={handleUpdateLocation}
               />
@@ -87,13 +87,13 @@ export const ImageInspector = () => {
               <CappingModal
                 style="window"
                 iscapped={inspectingImage.capped || null}
-                imagekey={inspectingImage.key!}
+                imagekey={inspectingImage.id!}
                 handleSetCapping={handleUpdateCapping}
               />
             </div>
             <Button
               type="button"
-              onClick={() => handleDeleteImage(inspectingImage.key)}
+              onClick={() => handleDeleteImage(inspectingImage.id)}
             >
               Delete Image
             </Button>

@@ -118,6 +118,8 @@ app.delete("/image/:id", async (req, res) => {
   console.log("stored images are now" + StoredImages.length);
 
   try {
+    // const filePath = path.join(process.cwd(), FoundImage.filePath);
+
     const uploadDir = path.join(process.cwd(), FoundImage.filePath);
 
     if (!fs.existsSync(uploadDir)) {

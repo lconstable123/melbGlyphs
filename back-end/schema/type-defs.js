@@ -1,8 +1,6 @@
 import gql from "graphql-tag";
 
 const typeDefs = gql`
-  scalar Upload
-
   type LocationData {
     latitude: Float!
     longitude: Float!
@@ -15,7 +13,9 @@ const typeDefs = gql`
     suburb: String
     uploadedAt: String!
     capped: String
-    filePath: String!
+    path: String!
+    isOnServer: Boolean!
+    # preview: String
   }
   input LocationInput {
     latitude: Float!
@@ -29,23 +29,28 @@ const typeDefs = gql`
     suburb: String
     uploadedAt: String!
     capped: String
-    filePath: String!
+    path: String!
+    isOnServer: Boolean!
+    # preview: String
   }
 
   input partialImageInput {
     artist: String
-    locationData: LocationInput
     suburb: String
+    locationData: LocationInput
     capped: String
   }
 
   input ImageMetaInput {
-    key: ID!
+    id: ID!
     artist: String
     suburb: String
     locationData: LocationInput!
     uploadedAt: String
     capped: String
+    path: String!
+    isOnServer: Boolean!
+    # preview: String
   }
 
   type ImageResponse {
@@ -55,10 +60,11 @@ const typeDefs = gql`
 
   type Query {
     images: [Image!]!
+    reverseGeocode(latitude: Float!, longitude: Float!): String
   }
 
   type Mutation {
-    addImages(images: [ImageMetaInput!]!, files: [Upload!]!): ImageResponse!
+    addImages(images: [ImageMetaInput!]!): ImageResponse!
     deleteImage(id: ID!): ImageResponse!
     updateImage(id: ID!, updatedData: partialImageInput!): ImageResponse!
   }

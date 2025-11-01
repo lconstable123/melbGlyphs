@@ -53,16 +53,16 @@ export const ItemDebug = () => {
       <ul className="flex flex-col gap-4 text-[7pt] text-left">
         <p>Server Images</p>
         {serverImages?.map((img) => {
-          console.log(img.preview);
+          // console.log(img.preview);
           return (
-            <li key={img.key} className="flex gap-2">
+            <li key={img.id} className="flex gap-2">
               {/* <div>{img.key.slice(0, 20)}</div> */}
               <div>{img.artist}</div>
-              {/* <div>{img.locationData?.latitude}</div> */}
-              {/* <div>{img.locationData?.longitude}</div> */}
+              <div>{img.locationData?.latitude}</div>
+              <div>{img.locationData?.longitude}</div>
               <div>{img.suburb}</div>
               {/* <div>{img.preview}</div> */}
-              <div>{img.fileName}</div>
+              <div>{img.path}</div>
               <div>{img.capped}</div>
             </li>
           );
@@ -71,16 +71,16 @@ export const ItemDebug = () => {
       <ul className="flex flex-col gap-4 text-[7pt] text-left mt-10">
         <p>Uploading Images</p>
         {uploadedImages?.map((img) => {
-          console.log(img.preview);
+          // console.log(img.preview);
           return (
-            <li key={img.key} className="flex gap-2">
-              <div>{img.key.slice(0, 20)}</div>
+            <li key={img.id} className="flex gap-2">
+              <div>{img.id.slice(0, 20)}</div>
               {/* <div>{img.artist}</div> */}
-              {/* <div>{img.locationData?.latitude}</div> */}
-              {/* <div>{img.locationData?.longitude}</div> */}
+              <div>{img.locationData?.latitude}</div>
+              <div>{img.locationData?.longitude}</div>
               {/* <div>{img.suburb}</div> */}
               {/* <div>{img.preview}</div> */}
-              <div>{img.fileName}</div>
+              <div>{img.path}</div>
             </li>
           );
         })}

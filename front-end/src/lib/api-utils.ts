@@ -22,41 +22,41 @@ export const queryLocation = async (query: string) => {
   }
 };
 
-export const fetchSuburbFromCoords = async (
-  latitude: number,
-  longitude: number
-): Promise<string | null> => {
-  try {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+// export const fetchSuburbFromCoords = async (
+//   latitude: number,
+//   longitude: number
+// ): Promise<string | null> => {
+//   try {
+//     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
 
-    const response = await fetch(url, {
-      headers: {
-        "User-Agent": "MelbGlyphs/1.0", // You must include a valid user-agent
-        "Accept-Language": "en",
-      },
-    });
+//     const response = await fetch(url, {
+//       headers: {
+//         "User-Agent": "MelbGlyphs/1.0", // You must include a valid user-agent
+//         "Accept-Language": "en",
+//       },
+//     });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch location data");
-    }
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch location data");
+//     }
 
-    const data = await response.json();
+//     const data = await response.json();
 
-    const suburb =
-      data?.address?.suburb ||
-      data?.address?.neighbourhood ||
-      data?.address?.city_district ||
-      data?.address?.town ||
-      data?.address?.village ||
-      data?.address?.city ||
-      null;
+//     const suburb =
+//       data?.address?.suburb ||
+//       data?.address?.neighbourhood ||
+//       data?.address?.city_district ||
+//       data?.address?.town ||
+//       data?.address?.village ||
+//       data?.address?.city ||
+//       null;
 
-    return suburb;
-  } catch (error) {
-    console.error("Reverse geocoding failed:", error);
-    return null;
-  }
-};
+//     return suburb;
+//   } catch (error) {
+//     console.error("Reverse geocoding failed:", error);
+//     return null;
+//   }
+// };
 
 export const ImageConverter = async (image: TuploadImage) => {
   const formData = new FormData();
@@ -76,12 +76,12 @@ export const ImageConverter = async (image: TuploadImage) => {
   const data = await res.json();
   // toast.success("Image Converted!");
   const convertedImage: TuploadImage = {
-    key: image.key,
+    id: image.id,
     converted: true,
     file: image.file,
-    preview: `data:${data.image.mimeType};base64,${data.image.data}`,
     locationData: await extractLocationData(image.file),
-    fileName: image.fileName.split(".")[0] + ".jpg",
+    path: `data:${data.image.mimeType};base64,${data.image.data}`,
+    isOnServer: false,
   };
   return convertedImage;
 };
