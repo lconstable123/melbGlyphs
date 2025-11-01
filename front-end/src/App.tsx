@@ -15,7 +15,7 @@ function App() {
     <div className="flex-col flex justify-start">
       <section className="overflow-hidden select-none pointer-events-none  absolute inset-0 w-screen h-screen z-30    ">
         <TopBar />
-        <ItemDebug />
+        {/* <ItemDebug /> */}
         <AddImage />
         {mode === "explore" && (
           <section className="relative  w-full h-full">

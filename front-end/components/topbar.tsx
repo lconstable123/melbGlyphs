@@ -9,7 +9,7 @@ export const TopBar = () => {
     <div
       id="top-bar"
       className={cn(
-        "transition-all flex  gap-2 bg-black  px-5 py-2  h-auto text-sm   w-full  items-center justify-center",
+        " hidden transition-all sm:flex  gap-2 bg-black  px-5 py-2  h-auto text-sm   w-full  items-center justify-center",
         mode === "initial" ? "" : ""
       )}
     >
