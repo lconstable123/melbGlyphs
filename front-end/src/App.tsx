@@ -12,19 +12,20 @@ function App() {
   const { uploadedImages, mode, inspectingImage, allImages } =
     useLocationContext();
   return (
-    <div className="flex-col flex justify-start">
-      <section className="overflow-hidden select-none pointer-events-none  absolute inset-0 w-screen h-screen z-30    ">
+    <div className="flex-col flex justify-start ">
+      <section className="overflow-hidden select-none pointer-events-none flex flex-col  absolute inset-0   z-30    ">
         <TopBar />
+        {/* <TopBar /> */}
         {/* <ItemDebug /> */}
         <AddImage />
-        {mode === "explore" && (
-          <section className="relative  w-full h-full">
-            {inspectingImage && <ImageInspector />}
-          </section>
-        )}
+
+        <section className=" border-amber-300 relative flex flex-col h-full w-full    ">
+          {mode == "explore" && inspectingImage && <ImageInspector />}
+        </section>
+
         <div
           className={cn(
-            "transition-all duration-500",
+            "transition-all duration-500 absolute top-0 left-0 w-full  flex  z-400 ",
             mode !== "upload" ? "-translate-x-full" : "translate-x-0"
           )}
         >

@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 // import { fetchSuburbFromCoords } from "../api-utils";
 import { useLocationContext } from "../providers/location-provider";
-import type { TlocationData, TuploadImage } from "../types";
+import type {
+  TGQLReverseGeocodeData,
+  TGQLReverseGeocodeVars,
+  TlocationData,
+  TuploadImage,
+} from "../types";
 import { toast } from "react-hot-toast";
 import { useQuery } from "@apollo/client/react";
 import { REVERSE_GEOCODE } from "../gql-utils";
@@ -10,11 +15,28 @@ export const useFetchLocation = (
   location: TlocationData | null,
   serverOrUpload: "server" | "upload"
 ) => {
-  const { setUploadedImages, handleUpdateImage } = useLocationContext();
+  const {
+    setUploadedImages,
+    handleUpdateImage,
+    handleRefreshServerImages,
+    setInspectingImage,
+  } = useLocationContext();
+  const { data, loading, error } = useQuery<
+    TGQLReverseGeocodeData,
+    TGQLReverseGeocodeVars
+  >(REVERSE_GEOCODE, {
+    variables: {
+      latitude: location?.latitude || 0,
+      longitude: location?.longitude || 0,
+    },
+
+    skip: !location, // prevents query if no coords
+  });
 
   const handleSetUploadedSuburb = (suburb: string) => {
     if (serverOrUpload === "server") {
-      handleUpdateImage({ suburb: suburb }, imageKey);
+      handleUpdateImage({ suburb }, imageKey);
+      setInspectingImage((prev) => ({ ...prev, suburb } as TuploadImage));
     } else {
       setUploadedImages((previmages) =>
         previmages.map((img) =>
@@ -25,34 +47,15 @@ export const useFetchLocation = (
   };
 
   useEffect(() => {
-    // toast.success("suburb finding...");
-    const fetchSuburb = async () => {
-      if (location) {
-        // const suburb = await fetchSuburbFromCoords(
-        //   location.latitude,
-        //   location.longitude
-        // );
-        // const { data: suburb } = await fetchSuburbFromCoords(
-        //   location.latitude,
-        //   location.longitude
-        // );
-        const { data: suburb } = useQuery(REVERSE_GEOCODE, {
-          variables: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-          },
-        });
-
-        console.log(suburb); // This will be the returned suburb string
-
-        toast.success(`fetched suburb...${suburb}`);
-        if (suburb) {
-          // handleSetUploadedSuburb(suburb);
-        }
-      }
-    };
-    fetchSuburb();
-  }, [location]);
+    if (loading) {
+    } else if (error) {
+      // toast.error("Error fetching suburb: " + error.message);
+    } else if (data?.reverseGeocode) {
+      const suburb = data.reverseGeocode;
+      // toast.success("found suburb with location:" + suburb);
+      handleSetUploadedSuburb(suburb);
+    }
+  }, [data, loading, error]);
 
   return {};
 };

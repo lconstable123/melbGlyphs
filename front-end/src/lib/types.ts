@@ -26,6 +26,10 @@ export type Tmode = "initial" | "explore" | "upload";
 export type TGQLGetImages = {
   images: TImages;
 };
+export type TGQLGetArtists = {
+  artists: string[];
+};
+
 export type GQLResponse = {
   success: boolean;
   message: string;
@@ -49,4 +53,12 @@ export type TGQLUpdateImageVars = {
 
 export type TGQLAddImagesVars = {
   images: TImages;
+};
+
+export type TGQLReverseGeocodeVars = {
+  latitude: number;
+  longitude: number;
+};
+export type TGQLReverseGeocodeData = {
+  reverseGeocode: string;
 };

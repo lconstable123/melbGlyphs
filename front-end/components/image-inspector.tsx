@@ -8,7 +8,7 @@ import type { TlocationData, TuploadImage } from "../src/lib/types";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
 // import type { p } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
-// import { useFetchLocation } from "@/lib/hooks/useFetchLocation";
+import { useFetchLocation } from "@/lib/hooks/useFetchLocation";
 export const ImageInspector = () => {
   const {
     inspectingImage,
@@ -18,22 +18,20 @@ export const ImageInspector = () => {
   } = useLocationContext();
 
   const handleUpdateLocation = (pos: TlocationData) => {
-    // toast.success("Location updated to " + JSON.stringify(pos));
     setInspectingImage((prev) => {
       if (!prev) return prev;
       return { ...prev, locationData: pos };
     });
 
     handleUpdateImage({ locationData: pos }, inspectingImage!.id);
-    // setTempLocation(pos);
   };
-  // useFetchLocation(
-  //   inspectingImage!.id,
-  //   inspectingImage ? inspectingImage.locationData : null,
-  //   "server"
-  // );
+  useFetchLocation(
+    inspectingImage!.id,
+    inspectingImage ? inspectingImage.locationData : null,
+    "server"
+  );
   const handleUpdateArtist = (artist: string | null) => {
-    toast.success("Artist updated to " + artist);
+    // toast.success("Artist updated to " + artist);
     handleUpdateImage({ artist: artist }, inspectingImage!.id);
     setInspectingImage((prev) => {
       if (!prev) return prev;
@@ -42,7 +40,7 @@ export const ImageInspector = () => {
   };
 
   const handleUpdateCapping = (iscapped: string | null) => {
-    toast.success("Capping status updated to " + iscapped);
+    // toast.success("Capping status updated to " + iscapped);
     handleUpdateImage({ capped: iscapped }, inspectingImage!.id);
     setInspectingImage((prev) => {
       if (!prev) return prev;
@@ -55,9 +53,9 @@ export const ImageInspector = () => {
     : inspectingImage!.path;
 
   return (
-    <div className=" border-0 sm:border border-fuchsia-500 w-full sm:w-100 h-full sm:h-auto pb-2 pointer-events-auto  absolute top-0 sm:top-30 z-600 right-0 sm:right-10  bg-black text-white   overflow-auto">
+    <div className=" border-0 sm:border-3 border-fuchsia-500 w-full sm:w-150  h-full    pointer-events-auto  ml-auto  z-600  bg-black text-white  ">
       {inspectingImage ? (
-        <div>
+        <div className="flex flex-col   relative w-full h-full   items-center justify-between gap-4 p-4 ">
           <ImageCloser
             type="inspector"
             handleClick={() => {
@@ -65,38 +63,53 @@ export const ImageInspector = () => {
             }}
             ImageKey={inspectingImage.id}
           />
-          <img src={absoluteUrl} alt="Image" className="w-full h-full " />
+          <div className="relative w-full overflow-hidden  bg-black h-full">
+            <img
+              src={absoluteUrl}
+              alt="Image"
+              className="absolute w-full object-cover p-10 h-full "
+            />
+          </div>
+          <div>
+            <div>
+              <h2 className="text-2xl font-semibold mt-2">Edit Details</h2>
+            </div>
 
-          <div className="relative flex justify-center gap-4 mx-5   items-center mt-5 sm:mt-2">
-            <div className="w-50">
-              <ArtistModal
-                style="window"
-                artist={inspectingImage.artist || null}
-                handleSetArtist={handleUpdateArtist}
-              />
+            <div className=" border border-fuchsia-500 rounded-xl relative flex flex-wrap justify-center gap-4 p-2 mx-10   items-center mt-10 sm:mt-2">
+              <div className="w-auto">
+                <ArtistModal
+                  style="window"
+                  artist={inspectingImage.artist || null}
+                  handleSetArtist={handleUpdateArtist}
+                />
+              </div>
+              <div className="w-auto ">
+                <LocationModal
+                  style="window"
+                  imagekey={inspectingImage.id}
+                  location={inspectingImage.locationData}
+                  setGlobalLocation={handleUpdateLocation}
+                  suburb={inspectingImage.suburb || null}
+                />
+              </div>
+              <div className="w-auto">
+                <CappingModal
+                  style="window"
+                  iscapped={inspectingImage.capped || null}
+                  imagekey={inspectingImage.id!}
+                  handleSetCapping={handleUpdateCapping}
+                />
+              </div>
+              <div className="w-auto">
+                <Button
+                  variant="destructive"
+                  type="button"
+                  onClick={() => handleDeleteImage(inspectingImage.id)}
+                >
+                  Delete
+                </Button>
+              </div>
             </div>
-            <div className="w-50 ">
-              <LocationModal
-                style="window"
-                imagekey={inspectingImage.id}
-                location={inspectingImage.locationData}
-                setGlobalLocation={handleUpdateLocation}
-              />
-            </div>
-            <div className="w-50">
-              <CappingModal
-                style="window"
-                iscapped={inspectingImage.capped || null}
-                imagekey={inspectingImage.id!}
-                handleSetCapping={handleUpdateCapping}
-              />
-            </div>
-            <Button
-              type="button"
-              onClick={() => handleDeleteImage(inspectingImage.id)}
-            >
-              Delete Image
-            </Button>
           </div>
         </div>
       ) : (

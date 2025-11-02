@@ -11,12 +11,7 @@ import type {
   TGQLDeleteImageVars,
   TGQLDeleteImage,
 } from "../types";
-import {
-  DeleteImage,
-  getImagesFromServer,
-  transformServerImageData,
-  UpdateImage,
-} from "../server-utils";
+
 import { toast } from "react-hot-toast";
 import { useMutation, useQuery } from "@apollo/client/react";
 // import { useMutation } from '@apollo/client';
@@ -77,13 +72,9 @@ export const LocationProvider = ({
 
   const handleRefreshServerImages = async () => {
     try {
-      // const images = await getImagesFromServer();
-      // const images = images;
       const { data: images } = await refetch();
-      toast.success("Server images refreshed");
+      // toast.success("Server images refreshed");
       console.log("Fetched images from server:", images);
-      // const transformedImages = transformServerImageData(images || []);
-      // console.log("Transformed images:", transformedImages);
       setServerImages(images?.images || []);
     } catch (error) {
       toast.error("Failed to refresh server images");
@@ -98,7 +89,7 @@ export const LocationProvider = ({
       toast.error("Failed to delete image");
       return;
     }
-    toast.success("Image deleted successfully");
+    // toast.success("Image deleted successfully");
     setInspectingImage(null);
     handleRefreshServerImages();
   };
@@ -108,8 +99,8 @@ export const LocationProvider = ({
     key: string
   ) => {
     //  await UpdateImage(updatedImage, key);'
-    toast.success("Updating image... key:" + key + "Data:");
-    console.log("Updating image with ID:", key, "Data:", updatedImage);
+    // toast.success("Updating image... key:" + key + "Data:");
+    // console.log("Updating image with ID:", key, "Data:", updatedImage);
     const result = await updateImage({
       variables: { id: key, updatedData: updatedImage },
     });
@@ -118,7 +109,7 @@ export const LocationProvider = ({
       toast.error("Failed to update image");
       return;
     }
-    toast.success("Image updated successfully");
+    // toast.success("Image updated successfully");
     handleRefreshServerImages();
   };
 

@@ -11,7 +11,7 @@ import {
 } from "../utils/schemas.js";
 const uploadDir = path.join(process.cwd(), "uploads");
 const apiUrl = "http://localhost:5000";
-import { StoredImages } from "../fake-data.js";
+import { StoredImages, Artists } from "../fake-data.js";
 const resolvers = {
   Query: {
     images: () => {
@@ -22,6 +22,10 @@ const resolvers = {
       // );
       return StoredImages;
     },
+    artists: () => {
+      return Artists;
+    },
+
     reverseGeocode: async (parent, { latitude, longitude }) => {
       console.log("reverseGeocode called with:", latitude, longitude);
       const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
@@ -54,6 +58,7 @@ const resolvers = {
       try {
         const imagesMapped = images.map((img) => {
           console.log("Processing image:", img.path);
+
           return {
             id: img.id,
             artist: img.artist || null,
@@ -65,6 +70,7 @@ const resolvers = {
             isOnServer: true,
           };
         });
+
         console.log("Mapped images:", imagesMapped);
         const parsed = imageObjectsSchema.safeParse(imagesMapped);
         if (!parsed.success) {
@@ -74,7 +80,26 @@ const resolvers = {
             message: "Validation errors",
           };
         }
+
+        //server action -update
         StoredImages.push(...parsed.data);
+
+        const newArtists = imagesMapped
+          .map((img) => img.artist)
+          .filter(Boolean);
+
+        //server fetch -update
+        // const existingArtists = Artists;
+
+        //server update -update
+        // Artists = Array.from(new Set([...existingArtists, ...newArtists]));
+        newArtists.forEach((newArtist) => {
+          if (!Artists.includes(newArtist)) {
+            console.log("Adding new artist:", newArtist);
+            Artists.push(newArtist);
+            console.log("Current artists list:", Artists);
+          }
+        });
       } catch (err) {
         console.error("Error processing images:", err);
 
@@ -98,7 +123,27 @@ const resolvers = {
       console.log("deleteImage called with ID:", id);
       const { FoundImage, index } = findImageById(StoredImages, id);
       console.log("Found image to delete:", FoundImage.path);
+
+      // server action - update
       StoredImages.splice(index, 1);
+      if (FoundImage.artist) {
+        console.log("Deleted image artist:", FoundImage.artist);
+        const artistStillExists = StoredImages.some(
+          (img) => img.artist === FoundImage.artist
+        );
+        if (artistStillExists) {
+          console.log("Artist still has images:", FoundImage.artist);
+        } else {
+          console.log("Artist has no more images:", FoundImage.artist);
+
+          //server update - update
+          const index = Artists.indexOf(FoundImage.artist);
+          if (index !== -1) {
+            Artists.splice(index, 1); // removes the artist
+          }
+          console.log("Updated artists list:", Artists);
+        }
+      }
 
       try {
         // const filePath = FoundImage.path;
@@ -112,6 +157,8 @@ const resolvers = {
         } else {
           console.log("Deleting file at path:", filePath);
         }
+
+        //server file delete - update
         await fs.promises.unlink(filePath);
       } catch (err) {
         console.error("Error deleting file:", err);
@@ -138,6 +185,7 @@ const resolvers = {
           message: "Validation errors",
         };
       }
+      // server action - update
       StoredImages[index] = { ...FoundImage, ...updatedData };
       console.log("Updated image:", StoredImages[index]);
 

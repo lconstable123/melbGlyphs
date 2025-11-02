@@ -28,7 +28,7 @@ export const UploadCard = ({
   const location = image.locationData;
 
   const errorControls = useAnimation();
-  // useFetchLocation(image.id, location, "upload");
+  useFetchLocation(image.id, location, "upload");
 
   const handleSetUploadedArtist = (artist: string | null) => {
     setUploadedImages((previmages) =>
@@ -102,6 +102,7 @@ export const UploadCard = ({
               setGlobalLocation={setGlobalLocation}
               imagekey={image.id}
               location={location}
+              suburb={suburb}
             />
           </div>
         </div>
@@ -116,12 +117,12 @@ export const UploadCard = ({
             artist={artist}
             handleSetArtist={handleSetUploadedArtist}
           />
-          <p id="location-suburb" className="font-medium pt-2">
+          {/* <p id="location-suburb" className="font-medium pt-2">
             {suburb}
-          </p>
+          </p> */}
           <div
             id="location-coordinates"
-            className="flex text-white/80 text-[7pt] gap-0 "
+            className="flex text-white/80 text-[7pt] gap-0 pt-2 "
           >
             {location !== null ? (
               <>
@@ -130,7 +131,7 @@ export const UploadCard = ({
               </>
             ) : (
               <div className="text-sm flex flex-col items-center">
-                <p className="text-[9pt] ">No location data available</p>
+                <p className="text-[7pt] ">No location data available</p>
 
                 <motion.p
                   initial={{ opacity: 0 }}

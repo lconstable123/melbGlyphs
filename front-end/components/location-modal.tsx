@@ -19,12 +19,13 @@ import toast from "react-hot-toast";
 
 export const LocationModal = ({
   location,
+  suburb,
   setGlobalLocation,
   imagekey,
   style = "outside",
 }: {
   location: TlocationData | null;
-
+  suburb?: string | null;
   setGlobalLocation: (pos: TlocationData, id: string) => void;
   imagekey: string;
   style: "outside" | "window";
@@ -58,9 +59,9 @@ export const LocationModal = ({
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        toast.success(
-          open ? "Opened location selector" : "Closed location selector"
-        );
+        // toast.success(
+        //   open ? "Opened location selector" : "Closed location selector"
+        // );
         if (!open && localLocation) {
           handleSetGlobalLocation(localLocation);
           setAllowSearch(false);
@@ -80,7 +81,11 @@ export const LocationModal = ({
           `}
         >
           <Button role="button" type="button" size="sm" variant="onImage">
-            {location !== null ? "Edit Location" : "Select Location"}
+            {location !== null
+              ? suburb
+                ? suburb
+                : "Edit Location"
+              : "Select Location"}
           </Button>
         </div>
       </DialogTrigger>

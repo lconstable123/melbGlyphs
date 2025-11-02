@@ -35,7 +35,7 @@ export const ImageUploads = () => {
       handleAnimateError();
       return;
     }
-    toast.success("Uploading images...");
+    // toast.success("Uploading images...");
     try {
       const Keyedfiles = uploadedImages
         .filter((img) => !!img.file)
@@ -74,7 +74,7 @@ export const ImageUploads = () => {
       } catch {
         data = { message: "Files uploaded, no response message." };
       }
-      toast.success("Files uploaded to server. with message : " + data.message);
+      // toast.success("Files uploaded to server. with message : " + data.message);
 
       const preppedImages = uploadedImages.map((img) => {
         const ext = img.file?.type.split("/")[1];

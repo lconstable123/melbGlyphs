@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import type { TuploadImage } from "./types";
 import * as exifr from "exifr";
 export const queryLocation = async (query: string) => {
@@ -74,7 +75,7 @@ export const ImageConverter = async (image: TuploadImage) => {
   }
 
   const data = await res.json();
-  // toast.success("Image Converted!");
+  toast.success("Image Converted!");
   const convertedImage: TuploadImage = {
     id: image.id,
     converted: true,

@@ -42,7 +42,7 @@ h2 {
 }
 
 .hover-outline {
-  @apply transition-all duration-300 outline-1 hover:outline-fuchsia-500 outline-fuchsia-500/30;
+  @apply transition-all duration-300 outline-1 hover:outline-fuchsia-500 outline-fuchsia-500/60;
 }
 
 #root {
@@ -50,7 +50,7 @@ h2 {
   /* margin: 0 auto; */
 
   text-align: center;
-  width: 100%;
+  /* width: 100%; */
 
   @apply bg-neutral-900;
 }
@@ -120,7 +120,7 @@ h2 {
   flex-direction: column;
   border-radius: 5px;
   overflow: hidden;
-  border: 1px solid oklch(66.7% 0.295 132.15);
+  border: 2px solid oklch(66.7% 0.295 132.15);
 }
 .map-popup__update-details {
   position: absolute;
@@ -139,8 +139,9 @@ h2 {
 
 .map-popup__image {
   vertical-align: middle;
-  /* width: 200px;
-  height: 200px; */
+  width: 120px;
+  height: 150px;
+  object-fit: cover;
 }
 .map-popup__image-wrapper {
   position: relative;
@@ -149,7 +150,7 @@ h2 {
 .map-popup__fader {
   position: absolute;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.9);
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 2;

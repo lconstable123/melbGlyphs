@@ -61,6 +61,7 @@ const typeDefs = gql`
   type Query {
     images: [Image!]!
     reverseGeocode(latitude: Float!, longitude: Float!): String
+    artists: [String]!
   }
 
   type Mutation {

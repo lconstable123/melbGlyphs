@@ -62,12 +62,12 @@ export const GeoMap = () => {
       // Custom marker element
       const markerEl = document.createElement("div");
       markerEl.className = "custom-marker";
-      markerEl.style.width = "40px";
-      markerEl.style.height = "40px";
+      markerEl.style.width = "50px";
+      markerEl.style.height = "50px";
       markerEl.style.backgroundImage = `url(${absoluteUrl})`;
       markerEl.style.backgroundSize = "cover";
-      markerEl.style.border = "3px solid black";
-      // markerEl.style.borderRadius = "30%";
+      // markerEl.style.border = "3px solid black";
+      markerEl.style.borderRadius = "50%";
       markerEl.style.boxShadow = "0 0 5px rgba(0,0,0,0.5)";
       markerEl.style.cursor = "pointer";
 
@@ -81,7 +81,7 @@ export const GeoMap = () => {
     <div class="map-popup__image-wrapper">
       <img src="${absoluteUrl}" alt="Image" class="map-popup__image"  />
       <div class="map-popup__fader" ></div>
-      <p class="map-popup__update-details">Update deets</p>
+      <p class="map-popup__update-details">Inspect and Update deets</p>
     </div>
     <div class="map-popup__artist">
       <p>${img.artist ? img.artist : "Unknown Artist"}</p>
@@ -128,10 +128,10 @@ export const GeoMap = () => {
   return (
     <div
       onClick={() => {
-        if (mode !== "explore") {
-          setMode("explore");
-          toast.success("Explore mode activated");
-        }
+        // if (mode !== "explore") {
+        // setMode("explore");
+        // toast.success("Explore mode activated");
+        // }
       }}
       ref={mapContainerRef}
       className="absolute w-full h-screen "

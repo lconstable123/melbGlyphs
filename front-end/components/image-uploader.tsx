@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { ImgSkeleton } from "./loading-card";
 
 import type { TuploadImage, TuploadImages } from "../src/lib/types";
-import { ImageConverter } from "../src/lib/api-utils";
+import { ImageConverter } from "../src/lib/server-utils";
 import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "../src/lib/providers/location-provider";
 import { uploadImages } from "../src/lib/server-utils";
@@ -50,7 +50,7 @@ export const ImageUploader = () => {
           id,
           converted: true,
           file,
-          // preview: URL.createObjectURL(file),
+
           locationData: null,
           uploadedAt: new Date().toISOString(),
           capped: false,
@@ -64,7 +64,6 @@ export const ImageUploader = () => {
           id,
           converted: false,
           file,
-          // preview: index.toString(),
           locationData: null,
           path: file.name,
           isOnServer: false,

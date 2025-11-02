@@ -50,3 +50,9 @@ export const REVERSE_GEOCODE = gql`
     reverseGeocode(latitude: $latitude, longitude: $longitude)
   }
 `;
+
+export const GET_ARTISTS = gql`
+  query getArtists {
+    artists
+  }
+`;

@@ -1,6 +1,6 @@
 import { Input } from "../src/components/ui/input";
 
-import { artists } from "../src/lib/data";
+// import { artists } from "../src/lib/data";
 import { useState } from "react";
 
 import {
@@ -21,6 +21,9 @@ import {
 
 import { ChevronDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { GET_ARTISTS } from "@/lib/gql-utils";
+import type { TGQLGetArtists } from "@/lib/types";
+import { useQuery } from "@apollo/client/react";
 
 export const ArtistModal = ({
   artist,
@@ -34,11 +37,13 @@ export const ArtistModal = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+  const { data, loading, error, refetch } =
+    useQuery<TGQLGetArtists>(GET_ARTISTS);
   return (
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
+        refetch();
         if (!open && artist) {
           handleSetArtist(artist);
         }
@@ -47,7 +52,7 @@ export const ArtistModal = ({
     >
       <DialogTrigger
         className={cn(
-          " rounded-md bg-black cursor-pointer group h-full w-full *:**:not-[]:l   ",
+          "bg-black rounded-md   cursor-pointer group h-full w-full *:**:not-[]:l   ",
           "hover-outline  focus-visible:outline-none focus-visible:ring-1"
         )}
       >
@@ -109,17 +114,19 @@ export const ArtistModal = ({
                   align="start"
                   className=" max-h-60  overflow-y-auto"
                 >
-                  {artists.map((artist, index) => (
-                    <SelectItem
-                      key={artist + index}
-                      value={artist}
-                      onClick={() => {
-                        handleSetArtist(artist);
-                      }}
-                    >
-                      {artist}
-                    </SelectItem>
-                  ))}
+                  {!loading &&
+                    !error &&
+                    data?.artists.map((artist, index) => (
+                      <SelectItem
+                        key={artist + index}
+                        value={artist}
+                        onClick={() => {
+                          handleSetArtist(artist);
+                        }}
+                      >
+                        {artist}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
