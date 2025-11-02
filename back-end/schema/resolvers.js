@@ -1,7 +1,21 @@
 import gql from "graphql-tag";
 import { GraphQLUpload } from "graphql-upload-minimal";
 // import { GraphQLJSON } from "graphql-type-json";
-import { findImageById } from "../server-utils.js";
+import {
+  addToServer,
+  deleteImageFromServer,
+  fetchArtists,
+  fetchImages,
+  findImageById,
+  updateImageOnServer,
+} from "../server-utils.js";
+import {
+  PutItemCommand,
+  GetItemCommand,
+  DeleteItemCommand,
+} from "@aws-sdk/client-dynamodb";
+import { dynamo } from "../utils/dynamo.js";
+import { saveImageLocally } from "../utils/upload.js";
 import fs from "fs";
 import path from "path";
 import {
@@ -12,18 +26,19 @@ import {
 const uploadDir = path.join(process.cwd(), "uploads");
 const apiUrl = "http://localhost:5000";
 import { StoredImages, Artists } from "../fake-data.js";
+const IMAGES_TABLE = process.env.IMAGES_TABLE || "Images";
+const ARTISTS_TABLE = process.env.ARTISTS_TABLE || "Artists";
 const resolvers = {
   Query: {
-    images: () => {
-      // console.log("images query called");
-      // console.log(
-      //   "Returning images:",
-      //   StoredImages.map((img) => img.fileName)
-      // );
-      return StoredImages;
+    images: async () => {
+      console.log("images query called");
+      const images = await fetchImages();
+      return images;
     },
-    artists: () => {
-      return Artists;
+    artists: async () => {
+      console.log("artists query called");
+      const artists = await fetchArtists();
+      return artists;
     },
 
     reverseGeocode: async (parent, { latitude, longitude }) => {
@@ -57,7 +72,7 @@ const resolvers = {
       console.log("addImages called");
       try {
         const imagesMapped = images.map((img) => {
-          console.log("Processing image:", img.path);
+          // console.log("Processing image:", img.path);
 
           return {
             id: img.id,
@@ -81,25 +96,7 @@ const resolvers = {
           };
         }
 
-        //server action -update
-        StoredImages.push(...parsed.data);
-
-        const newArtists = imagesMapped
-          .map((img) => img.artist)
-          .filter(Boolean);
-
-        //server fetch -update
-        // const existingArtists = Artists;
-
-        //server update -update
-        // Artists = Array.from(new Set([...existingArtists, ...newArtists]));
-        newArtists.forEach((newArtist) => {
-          if (!Artists.includes(newArtist)) {
-            console.log("Adding new artist:", newArtist);
-            Artists.push(newArtist);
-            console.log("Current artists list:", Artists);
-          }
-        });
+        await addToServer(parsed.data);
       } catch (err) {
         console.error("Error processing images:", err);
 
@@ -108,46 +105,26 @@ const resolvers = {
           message: "Error processing images",
         };
       }
-      console.log(
-        "Images successfully added. Total images:",
-        StoredImages.length
-      );
+
       return {
         success: true,
         message: "Images added successfully",
       };
-      // Implementation for adding images
     },
 
     deleteImage: async (parent, { id }) => {
       console.log("deleteImage called with ID:", id);
-      const { FoundImage, index } = findImageById(StoredImages, id);
-      console.log("Found image to delete:", FoundImage.path);
 
-      // server action - update
-      StoredImages.splice(index, 1);
-      if (FoundImage.artist) {
-        console.log("Deleted image artist:", FoundImage.artist);
-        const artistStillExists = StoredImages.some(
-          (img) => img.artist === FoundImage.artist
-        );
-        if (artistStillExists) {
-          console.log("Artist still has images:", FoundImage.artist);
-        } else {
-          console.log("Artist has no more images:", FoundImage.artist);
-
-          //server update - update
-          const index = Artists.indexOf(FoundImage.artist);
-          if (index !== -1) {
-            Artists.splice(index, 1); // removes the artist
-          }
-          console.log("Updated artists list:", Artists);
-        }
+      const localURL = await deleteImageFromServer(id);
+      if (!localURL) {
+        return {
+          success: false,
+          message: "Error deleting image metadata",
+        };
       }
-
+      console.log("metadata deleted, moving to file delete");
       try {
-        // const filePath = FoundImage.path;
-        const filePath = path.join(process.cwd(), FoundImage.path);
+        const filePath = path.join(process.cwd(), localURL);
         if (!fs.existsSync(filePath)) {
           console.warn("File to delete does not exist:", filePath);
           return {
@@ -158,7 +135,6 @@ const resolvers = {
           console.log("Deleting file at path:", filePath);
         }
 
-        //server file delete - update
         await fs.promises.unlink(filePath);
       } catch (err) {
         console.error("Error deleting file:", err);
@@ -172,27 +148,11 @@ const resolvers = {
         success: true,
         message: `Image with ID ${id} deleted successfully`,
       };
-      // Implementation for deleting an image
     },
-    updateImage: (parent, { id, updatedData }) => {
-      console.log("updateImage called with ID:", id);
-      const { FoundImage, index } = findImageById(StoredImages, id);
-      const parsed = imageObjectSchema.safeParse(FoundImage);
-      if (!parsed.success) {
-        console.error("Validation errors:", parsed.error.errors);
-        return {
-          success: false,
-          message: "Validation errors",
-        };
-      }
-      // server action - update
-      StoredImages[index] = { ...FoundImage, ...updatedData };
-      console.log("Updated image:", StoredImages[index]);
 
-      return {
-        success: true,
-        message: `Image with ID ${id} updated successfully`,
-      };
+    updateImage: async (parent, { id, updatedData }) => {
+      console.log("updateImage called with ID:", id);
+      return await updateImageOnServer(id, updatedData);
     },
   },
 };

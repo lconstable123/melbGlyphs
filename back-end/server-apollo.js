@@ -3,7 +3,8 @@ import express from "express";
 import { expressMiddleware } from "@as-integrations/express5";
 import cors from "cors";
 import bodyParser from "body-parser";
-
+import dotenv from "dotenv";
+dotenv.config();
 import typeDefs from "./schema/type-defs.js";
 import resolvers from "./schema/resolvers.js";
 import path from "path";
@@ -13,6 +14,12 @@ import { fileTypeFromBuffer } from "file-type";
 import sharp from "sharp";
 import heicConvert from "heic-convert";
 async function startServer() {
+  console.log("IS_SERVER =", process.env.IS_SERVER);
+
+  console.log("AWS_REGION =", process.env.AWS_REGION);
+  console.log("DYNAMODB_ENDPOINT =", process.env.DYNAMODB_ENDPOINT);
+  console.log("accessKeyId =", process.env.AWS_ACCESS_KEY_ID);
+  console.log("secretAccessKey =", process.env.AWS_SECRET_ACCESS_KEY);
   const PORT = 5000;
   const app = express();
   const uploadDir = path.join(process.cwd(), "uploads");
