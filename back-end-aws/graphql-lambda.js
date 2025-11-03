@@ -75,29 +75,38 @@ const schema = buildSchema(`
 
 export const handler = async (event) => {
   // Handle OPTIONS for CORS preflight
-  if (event.httpMethod === "OPTIONS") {
+  if (event.requestContext.http.method === "OPTIONS") {
     return {
-      statusCode: 200,
+      statusCode: 204,
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "POST,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type,Authorization",
+        "Access-Control-Allow-Headers": "Content-Type",
       },
+      body: null,
     };
   }
 
+  console.log("Received event:", JSON.stringify(event, null, 2));
   // Parse the incoming GraphQL request
-  let body;
-  console.log("Received event:", event.body);
-  try {
-    body = JSON.parse(event.body);
-  } catch (err) {
+  if (!event.body) {
+    console.error("Missing body in request");
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Invalid request body" }),
+      body: JSON.stringify({ error: "Missing body in request" }),
     };
   }
 
+  let body;
+  try {
+    body = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
+  } catch (err) {
+    console.error("Error parsing JSON body:", err);
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Invalid JSON body" }),
+    };
+  }
   const { query, variables } = body;
   const rootValue = {
     ...resolvers.Query,

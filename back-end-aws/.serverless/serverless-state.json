@@ -147,7 +147,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-ap-southeast-2-c37dbad8-c80f",
-                "S3Key": "serverless/images-graphql/dev/1762165406278-2025-11-03T10:23:26.278Z/images-graphql.zip"
+                "S3Key": "serverless/images-graphql/dev/1762176382907-2025-11-03T13:26:22.907Z/images-graphql.zip"
               },
               "Handler": "graphql-lambda.handler",
               "Runtime": "nodejs18.x",
@@ -171,14 +171,14 @@
               "GraphqlLogGroup"
             ]
           },
-          "GraphqlLambdaVersionivFXM0X1UdHQ0TX95u9mUnYmzoDqHTrXKmSYEdgdk": {
+          "GraphqlLambdaVersionwjeODBGHbmGAtaFghhsM2XQvJX8u8Lm8QZDOxAjpKGo": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GraphqlLambdaFunction"
               },
-              "CodeSha256": "WAVhUWN79SBG1GdC3hLJe2ESlL6goCwZhAGpHkvA3sU="
+              "CodeSha256": "FUNckbe39MxPs0MVZKcGwM5937pIjRMT2tntX4n1+II="
             }
           },
           "HttpApi": {
@@ -318,7 +318,7 @@
           "GraphqlLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GraphqlLambdaVersionivFXM0X1UdHQ0TX95u9mUnYmzoDqHTrXKmSYEdgdk"
+              "Ref": "GraphqlLambdaVersionwjeODBGHbmGAtaFghhsM2XQvJX8u8Lm8QZDOxAjpKGo"
             },
             "Export": {
               "Name": "sls-images-graphql-dev-GraphqlLambdaFunctionQualifiedArn"
@@ -390,7 +390,7 @@
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "GraphqlLambdaVersionivFXM0X1UdHQ0TX95u9mUnYmzoDqHTrXKmSYEdgdk"
+        "versionLogicalId": "GraphqlLambdaVersionwjeODBGHbmGAtaFghhsM2XQvJX8u8Lm8QZDOxAjpKGo"
       }
     },
     "configValidationMode": "warn",
@@ -411,7 +411,7 @@
     "artifact": "C:\\Users\\luke\\Desktop\\webdev\\melbGlyphs\\back-end-aws\\.serverless\\images-graphql.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/images-graphql/dev/1762165406278-2025-11-03T10:23:26.278Z",
+    "artifactDirectoryName": "serverless/images-graphql/dev/1762176382907-2025-11-03T13:26:22.907Z",
     "artifact": "images-graphql.zip"
   }
 }

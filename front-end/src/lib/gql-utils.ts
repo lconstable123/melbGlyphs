@@ -88,16 +88,16 @@ export const AddImages = async (
 };
 
 export const GetImages = async () => {
-  const endpoint = import.meta.env.VITE_SERVER_URL!;
+  // const endpoint = import.meta.env.VITE_SERVER_URL!;
+  const endpoint =
+    "https://h7ucg7tgah.execute-api.ap-southeast-2.amazonaws.com/graphql";
   toast.success(`Fetching images from server...${endpoint}`);
   const res = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      query: GET_IMAGES,
-    }),
+    body: JSON.stringify({ query: GET_IMAGES }),
   });
   if (!res.ok) {
     const error = await res.json();
