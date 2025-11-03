@@ -62,7 +62,7 @@ export const GET_ARTISTS = gql`
 
 export const AddImages = async (
   images: any[]
-): { success: boolean; message?: string } => {
+): Promise<{ success: boolean; message?: string }> => {
   const endpoint = import.meta.env.VITE_SERVER_URL!;
   toast.success(`Adding images to server...${endpoint}`);
   const res = await fetch(endpoint, {
