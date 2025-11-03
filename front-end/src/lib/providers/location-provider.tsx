@@ -21,6 +21,9 @@ import {
   // DELETE_IMAGE,
   UPDATE_IMAGE,
   DELETE_IMAGE,
+  GetImages,
+  DeleteImage,
+  UpdateImage,
 } from "../gql-utils";
 type TLocationContext = {
   serverImages: TImages;
@@ -58,21 +61,10 @@ export const LocationProvider = ({
   const [uploading, setUploading] = useState<boolean>(false);
   const [inspectingImage, setInspectingImage] = useState<TImage | null>(null);
 
-  const { data, loading, error, refetch } = useQuery<TGQLGetImages>(GET_IMAGES);
-  const [addImages, { loading: addLoading, error: addError, data: addData }] =
-    useMutation(ADD_IMAGES);
-  const [
-    deleteImage,
-    { loading: deleteLoading, error: deleteError, data: deleteData },
-  ] = useMutation<TGQLDeleteImage, TGQLDeleteImageVars>(DELETE_IMAGE);
-  const [
-    updateImage,
-    { loading: updateLoading, error: updateError, data: updateData },
-  ] = useMutation<TGQLUpdateImage, TGQLUpdateImageVars>(UPDATE_IMAGE);
-
   const handleRefreshServerImages = async () => {
     try {
-      const { data: images } = await refetch();
+      const { data: images } = await GetImages();
+
       // toast.success("Server images refreshed");
       console.log("Fetched images from server:", images);
       setServerImages(images?.images || []);
@@ -84,7 +76,7 @@ export const LocationProvider = ({
   const handleDeleteImage = async (key: string) => {
     // await DeleteImage(key);
     toast.success("Deleting image...");
-    const result = await deleteImage({ variables: { id: key } });
+    const result = await DeleteImage(key);
     if (!result.data?.deleteImage?.success) {
       toast.error("Failed to delete image");
       return;
@@ -101,10 +93,7 @@ export const LocationProvider = ({
     //  await UpdateImage(updatedImage, key);'
     // toast.success("Updating image... key:" + key + "Data:");
     // console.log("Updating image with ID:", key, "Data:", updatedImage);
-    const result = await updateImage({
-      variables: { id: key, updatedData: updatedImage },
-    });
-
+    const result = await UpdateImage(key, updatedImage);
     if (!result.data?.updateImage?.success) {
       toast.error("Failed to update image");
       return;

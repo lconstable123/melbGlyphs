@@ -8,7 +8,7 @@ import type { TlocationData, TuploadImage } from "../src/lib/types";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
 // import type { p } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
-import { useFetchLocation } from "@/lib/hooks/useFetchLocation";
+import { useFetchLocation } from "../src/lib/hooks/useFetchLocation";
 export const ImageInspector = () => {
   const {
     inspectingImage,

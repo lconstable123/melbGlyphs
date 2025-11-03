@@ -1,5 +1,8 @@
 import { gql } from "@apollo/client";
+import { print } from "graphql";
 import { useMutation, useQuery } from "@apollo/client/react";
+import type { TPartialImage } from "./types";
+import { toast } from "react-hot-toast";
 export const ADD_IMAGES = gql`
   mutation AddImages($images: [ImageMetaInput!]!) {
     addImages(images: $images) {
@@ -9,7 +12,7 @@ export const ADD_IMAGES = gql`
   }
 `;
 
-export const GET_IMAGES = gql`
+export const GET_IMAGES = `
   query getImages {
     images {
       id
@@ -56,3 +59,128 @@ export const GET_ARTISTS = gql`
     artists
   }
 `;
+
+export const AddImages = async (images: any[]) => {
+  const endpoint = import.meta.env.VITE_SERVER_URL!;
+  toast.success(`Adding images to server...${endpoint}`);
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: print(ADD_IMAGES),
+      variables: { images: images },
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!data?.data?.addImages?.success) {
+    toast.error(data?.data?.addImages?.message || "Error uploading images");
+  } else {
+    toast.success("Images added successfully!");
+  }
+};
+
+export const GetImages = async () => {
+  const endpoint = import.meta.env.VITE_SERVER_URL!;
+  toast.success(`Fetching images from server...${endpoint}`);
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: GET_IMAGES,
+    }),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    console.error("GraphQL error:", error);
+    return { success: false, message: "Network error" };
+  }
+  const result = await res.json();
+  return result.data.images;
+};
+
+export const UpdateImage = async (id: string, updatedData: TPartialImage) => {
+  const endpoint = import.meta.env.VITE_SERVER_URL!;
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: print(UPDATE_IMAGE),
+      variables: { id, updatedData },
+    }),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    console.error("GraphQL error:", error);
+    return { success: false, message: "Network error" };
+  }
+  const result = await res.json();
+  return result.data.updateImage;
+};
+
+export const DeleteImage = async (id: string) => {
+  const endpoint = import.meta.env.VITE_SERVER_URL!;
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: print(DELETE_IMAGE),
+      variables: { id },
+    }),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    console.error("GraphQL error:", error);
+    return { success: false, message: "Network error" };
+  }
+  const result = await res.json();
+  return result.data.deleteImage;
+};
+export const ReverseGeocode = async (latitude: number, longitude: number) => {
+  const endpoint = import.meta.env.VITE_SERVER_URL!;
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: print(REVERSE_GEOCODE),
+      variables: { latitude, longitude },
+    }),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    console.error("GraphQL error:", error);
+    return { success: false, message: "Network error" };
+  }
+  const result = await res.json();
+  return result.data.reverseGeocode;
+};
+export const GetArtists = async () => {
+  const endpoint = import.meta.env.VITE_SERVER_URL!;
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: print(GET_ARTISTS),
+    }),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    console.error("GraphQL error:", error);
+    return { success: false, message: "Network error" };
+  }
+  const result = await res.json();
+  return result.data.artists;
+};

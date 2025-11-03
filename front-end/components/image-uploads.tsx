@@ -14,7 +14,7 @@ import { ImageConverter } from "../src/lib/api-utils";
 import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "../src/lib/providers/location-provider";
 import { uploadImages } from "../src/lib/server-utils";
-import { ADD_IMAGES } from "../src/lib/gql-utils";
+import { ADD_IMAGES, AddImages } from "../src/lib/gql-utils";
 import { useMutation, useQuery } from "@apollo/client/react";
 
 // import { useLocationContext } from "@/lib/providers/location-provider";
@@ -24,8 +24,8 @@ export const ImageUploads = () => {
 
   const { uploadedImages, setUploadedImages, handleRefreshServerImages } =
     useLocationContext();
-  const [addImages, { loading: addLoading, error: addError, data: addData }] =
-    useMutation<TGQLAddImages, TGQLAddImagesVars>(ADD_IMAGES);
+  // const [addImages, { loading: addLoading, error: addError, data: addData }] =
+  //   useMutation<TGQLAddImages, TGQLAddImagesVars>(ADD_IMAGES);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -58,23 +58,22 @@ export const ImageUploads = () => {
         formData.append("files", file.file, file.key);
       });
 
-      const res = await fetch("http://localhost:5000/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (!res.ok) {
-        toast.error("Failed to upload files to server.");
-        handleAnimateError();
-        return;
-      }
+      // const res = await fetch("http://localhost:5000/upload", {
+      //   method: "POST",
+      //   body: formData,
+      // });
+      // if (!res.ok) {
+      //   toast.error("Failed to upload files to server.");
+      //   handleAnimateError();
+      //   return;
+      // }
 
-      let data: any = {};
-      try {
-        data = await res.json();
-      } catch {
-        data = { message: "Files uploaded, no response message." };
-      }
-      // toast.success("Files uploaded to server. with message : " + data.message);
+      // let data: any = {};
+      // try {
+      //   data = await res.json();
+      // } catch {
+      //   data = { message: "Files uploaded, no response message." };
+      // }
 
       const preppedImages = uploadedImages.map((img) => {
         const ext = img.file?.type.split("/")[1];
@@ -94,12 +93,7 @@ export const ImageUploads = () => {
       });
 
       console.log("Prepped images for upload:", preppedImages);
-      const response = await addImages({
-        variables: {
-          images: preppedImages,
-        },
-      });
-
+      const response = await AddImages(preppedImages);
       if (!response.data?.addImages?.success) {
         toast.error(response.data?.addImages?.message || "unknown message.");
         handleAnimateError();
@@ -111,44 +105,9 @@ export const ImageUploads = () => {
     } catch (err) {
       handleAnimateError();
       console.error("Error uploading images:", err);
-      toast.error("Failedd to upload images.");
-      return;
-    }
-  };
-
-  const handleSubmit_rest = async (e: any) => {
-    e.preventDefault();
-    const missingData = uploadedImages.some((img) => !img.locationData);
-    if (missingData) {
-      toast.error("Please set location data for all images before uploading.");
-      handleAnimateError();
-      return;
-    }
-    const formData = new FormData();
-    formData.append("images", JSON.stringify(uploadedImages));
-    uploadedImages.forEach((image, index) => {
-      if (!image.file) return;
-      if (!image.locationData?.latitude || !image.locationData?.longitude) {
-        toast.error("Location data missing for one or more images.");
-        return;
-      }
-      const ext = image.file.type.split("/")[1];
-      const extension = ext === "jpeg" ? "jpg" : ext;
-
-      const uniqueName = `${image.id}.${extension}`;
-      formData.append("files", image.file, uniqueName); // use key as filename
-    });
-
-    const success = await uploadImages(formData);
-
-    if (success) {
-      setUploadedImages([]);
-      handleRefreshServerImages();
-      toast.success("Images uploaded successfully!");
-    } else {
       toast.error("Failed to upload images.");
+      return;
     }
-    handleAnimateError();
   };
 
   const handleUpdateLocation = (pos: TlocationData, id: string) => {

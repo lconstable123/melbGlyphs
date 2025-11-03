@@ -9,7 +9,7 @@ import type {
 } from "../types";
 import { toast } from "react-hot-toast";
 import { useQuery } from "@apollo/client/react";
-import { REVERSE_GEOCODE } from "../gql-utils";
+import { REVERSE_GEOCODE, ReverseGeocode } from "../gql-utils";
 export const useFetchLocation = (
   imageKey: string,
   location: TlocationData | null,
@@ -21,17 +21,6 @@ export const useFetchLocation = (
     handleRefreshServerImages,
     setInspectingImage,
   } = useLocationContext();
-  const { data, loading, error } = useQuery<
-    TGQLReverseGeocodeData,
-    TGQLReverseGeocodeVars
-  >(REVERSE_GEOCODE, {
-    variables: {
-      latitude: location?.latitude || 0,
-      longitude: location?.longitude || 0,
-    },
-
-    skip: !location, // prevents query if no coords
-  });
 
   const handleSetUploadedSuburb = (suburb: string) => {
     if (serverOrUpload === "server") {
@@ -45,17 +34,20 @@ export const useFetchLocation = (
       );
     }
   };
-
-  useEffect(() => {
-    if (loading) {
-    } else if (error) {
-      // toast.error("Error fetching suburb: " + error.message);
-    } else if (data?.reverseGeocode) {
-      const suburb = data.reverseGeocode;
-      // toast.success("found suburb with location:" + suburb);
-      handleSetUploadedSuburb(suburb);
+  const HandleReverseGeocode = async ({
+    latitude,
+    longitude,
+  }: TlocationData) => {
+    const { data } = await ReverseGeocode(latitude || 0, longitude || 0);
+    if (!data || data?.reverseGeocode === null) {
+      toast.error("Failed to fetch suburb name for the given coordinates.");
+      return;
     }
-  }, [data, loading, error]);
+    handleSetUploadedSuburb(data?.reverseGeocode || null);
 
+    useEffect(() => {
+      HandleReverseGeocode(location as TlocationData);
+    }, [location]);
+  };
   return {};
 };
