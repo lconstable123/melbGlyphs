@@ -1,0 +1,57 @@
+
+addimages
+{
+  "query": "mutation AddImages($images: [ImageMetaInput!]!) { addImages(images: $images) { success message } }",
+  "variables": {
+    "images": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "artist": "Banksy",
+        "suburb": "Fitzroy",
+        "locationData": {
+          "latitude": -37.798,
+          "longitude": 144.978
+        },
+        "uploadedAt": "2025-11-03T10:00:00Z",
+        "capped": null,
+        "path": "banksy.jpg",
+        "isOnServer": true
+      }
+    ]
+  }
+}
+
+images
+{
+  "query": "query GetImages { images { id artist suburb locationData { latitude longitude } uploadedAt capped path isOnServer } }"
+}
+
+reverseGeocode
+{
+  "query": "query REVERSE_GEO($latitude: Float!, $longitude: Float!) { reverseGeocode(latitude: $latitude, longitude: $longitude) }",
+  "variables": {
+    "latitude": -37.798,
+    "longitude": 144.978
+  }
+}
+updateImage 
+  updateImage(id: ID!, updatedData: partialImageInput!): ImageResponse!
+{
+  "query": "mutation UpdateImage($id: ID!, $updatedData: partialImageInput!) { updateImage(id: $id, updatedData: $updatedData) { success message } }",
+  "variables":{
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "updatedData": {
+      "artist": "Shepard Fairey",
+      "suburb": "Collingwood"
+    }
+  }
+}
+
+  deleteImage(id: ID!): ImageResponse!
+  {
+    "query": "mutation DeleteImage($id: ID!){deleteImage(id: $id){success message}}",
+    "variables": {
+      "id": "550e8400-e29b-41d4-a716-446655440000"
+    }
+  }
+
