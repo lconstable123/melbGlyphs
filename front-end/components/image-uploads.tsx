@@ -94,8 +94,8 @@ export const ImageUploads = () => {
 
       console.log("Prepped images for upload:", preppedImages);
       const response = await AddImages(preppedImages);
-      if (!response.data?.addImages?.success) {
-        toast.error(response.data?.addImages?.message || "unknown message.");
+      if (!response.success) {
+        toast.error(response.message || "unknown message.");
         handleAnimateError();
       } else {
         setUploadedImages([]);

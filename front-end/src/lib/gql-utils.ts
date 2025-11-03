@@ -60,7 +60,9 @@ export const GET_ARTISTS = gql`
   }
 `;
 
-export const AddImages = async (images: any[]) => {
+export const AddImages = async (
+  images: any[]
+): { success: boolean; message?: string } => {
   const endpoint = import.meta.env.VITE_SERVER_URL!;
   toast.success(`Adding images to server...${endpoint}`);
   const res = await fetch(endpoint, {
@@ -78,8 +80,10 @@ export const AddImages = async (images: any[]) => {
 
   if (!data?.data?.addImages?.success) {
     toast.error(data?.data?.addImages?.message || "Error uploading images");
+    return { success: false, message: data?.data?.addImages?.message };
   } else {
     toast.success("Images added successfully!");
+    return { success: true, message: "sucess" };
   }
 };
 
