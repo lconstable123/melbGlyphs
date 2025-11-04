@@ -13,15 +13,16 @@ import type {
 import { ImageConverter } from "../src/lib/api-utils";
 import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "../src/lib/providers/location-provider";
-import { uploadImages } from "../src/lib/server-utils";
-import { ADD_IMAGES, AddImages } from "../src/lib/gql-utils";
+import { getPresignedUrl, uploadImages } from "../src/lib/server-utils";
+import { ADD_IMAGES, AddImages, toBase64 } from "../src/lib/gql-utils";
 import { useMutation, useQuery } from "@apollo/client/react";
 
 // import { useLocationContext } from "@/lib/providers/location-provider";
 
 export const ImageUploads = () => {
   //from context
-
+  const bucketName = import.meta.env.VITE_S3_BUCKET_NAME!;
+  const region = import.meta.env.VITE_AWS_REGION!;
   const { uploadedImages, setUploadedImages, handleRefreshServerImages } =
     useLocationContext();
   // const [addImages, { loading: addLoading, error: addError, data: addData }] =
@@ -29,84 +30,107 @@ export const ImageUploads = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    // Ensure all images have location data
     const missingData = uploadedImages.some((img) => !img.locationData);
     if (missingData) {
       toast.error("Please set location data for all images before uploading.");
       handleAnimateError();
       return;
     }
-    // toast.success("Uploading images...");
+
     try {
-      const Keyedfiles = uploadedImages
-        .filter((img) => !!img.file)
-        .map((img) => {
-          const ext = img?.file?.type.split("/")[1];
-          const extension = ext === "jpeg" ? "jpg" : ext;
-          return {
-            key: `${img.id}.${extension}`,
-            file: img.file!,
-          };
-        });
-      console.log("Files to be uploaded:", Keyedfiles);
-      if (Keyedfiles.length === 0) {
+      // Filter out images without files
+      const imagesWithFiles = uploadedImages.filter((img) => img.file);
+      if (imagesWithFiles.length === 0) {
         toast.error("No valid files to upload.");
         handleAnimateError();
         return;
       }
-      const formData = new FormData();
-      Keyedfiles.forEach((file, index) => {
-        formData.append("files", file.file, file.key);
-      });
 
-      // const res = await fetch("http://localhost:5000/upload", {
-      //   method: "POST",
-      //   body: formData,
-      // });
-      // if (!res.ok) {
-      //   toast.error("Failed to upload files to server.");
-      //   handleAnimateError();
-      //   return;
-      // }
-
-      // let data: any = {};
-      // try {
-      //   data = await res.json();
-      // } catch {
-      //   data = { message: "Files uploaded, no response message." };
-      // }
-
-      const preppedImages = uploadedImages.map((img) => {
-        const ext = img.file?.type.split("/")[1];
-        const extension = ext === "jpeg" ? "jpg" : ext;
-        const uniqueName = `${img.id}.${extension}`;
-
+      // Prepare images for S3 upload
+      const preppedImages = imagesWithFiles.map((img) => {
+        const ext =
+          img.file!.type.split("/")[1] === "jpeg"
+            ? "jpg"
+            : img.file!.type.split("/")[1];
+        const uniqueName = `${img.id}.${ext}`;
         return {
-          id: img.id,
-          artist: img.artist || null,
-          locationData: img.locationData!,
-          suburb: img.suburb || null,
-          uploadedAt: img.uploadedAt || new Date().toISOString(),
-          capped: img.capped || null,
-          path: uniqueName,
-          isOnServer: true,
+          ...img,
+          file: img.file!,
+          extension: ext,
+          uniqueName,
+          path: `uploads/${uniqueName}`, // path in S3
         };
       });
 
-      console.log("Prepped images for upload:", preppedImages);
-      const response = await AddImages(preppedImages);
+      toast.success("Images prepared for upload");
+      console.log("Prepped images:", preppedImages);
+
+      // Get presigned URLs
+      const presignedImages = await Promise.all(
+        preppedImages.map(async (img) => {
+          console.log(
+            "Requesting presigned URL for:",
+            img.uniqueName,
+            img.file.type
+          );
+
+          const { url, key } = await getPresignedUrl(
+            img.uniqueName,
+            img.file.type
+          );
+          console.log("Received presigned URL:", url, "and key:", key);
+          return { ...img, presignedUrl: url, s3Key: key };
+        })
+      );
+
+      // Upload to S3 using the presigned URLs
+      await Promise.all(
+        presignedImages.map(async (img) => {
+          if (!(img.file instanceof File)) {
+            toast.error("Invalid file type for upload.");
+            console.error("img.file is not a File:", img.file);
+            return;
+          }
+
+          console.log(`Uploading ${img.uniqueName} to S3...`);
+          await fetch(img.presignedUrl, {
+            method: "PUT",
+            headers: { "Content-Type": img.file.type },
+            body: img.file, // make sure this is the raw File object
+          });
+        })
+      );
+
+      // Prepare metadata for GraphQL mutation
+      const imageMetas = preppedImages.map((img) => ({
+        id: img.id,
+        artist: img.artist || null,
+        suburb: img.suburb || "",
+        uploadedAt: img.uploadedAt || new Date().toISOString(),
+        capped: img.capped || null,
+        locationData: img.locationData!,
+        isOnServer: true,
+        path: `https://${bucketName}.s3.${region}.amazonaws.com/${img.path}`,
+      }));
+
+      console.log("Sending image metadata to server:", imageMetas);
+      const response = await AddImages(imageMetas);
+
       if (!response.success) {
-        toast.error(response.message || "unknown message.");
+        toast.error(response.message || "Unknown error uploading images.");
         handleAnimateError();
-      } else {
-        setUploadedImages([]);
-        handleRefreshServerImages();
-        toast.success("Images uploaded successfully!");
+        return;
       }
+
+      setUploadedImages([]);
+      handleRefreshServerImages();
+      toast.success("Images uploaded successfully!");
     } catch (err) {
       handleAnimateError();
       console.error("Error uploading images:", err);
       toast.error("Failed to upload images.");
-      return;
     }
   };
 

@@ -1,6 +1,9 @@
 // import gql from "graphql-tag";
 // import { GraphQLUpload } from "graphql-upload-minimal";
 // import { GraphQLJSON } from "graphql-type-json";
+const s3 = new S3Client({ region: "ap-southeast-2" });
+const BUCKET_NAME = process.env.BUCKET_NAME || "melbglyphs";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import {
   addToServer,
   deleteImageFromServer,
@@ -58,26 +61,47 @@ const resolvers = {
   },
 
   Mutation: {
+    getPresignedUrl: async ({ filename, contentType }) => {
+      const key = `uploads/${filename}`;
+      const command = new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+        ContentType: contentType,
+      });
+      const { getSignedUrl } = await import("@aws-sdk/s3-request-presigner");
+      const url = await getSignedUrl(s3, command, { expiresIn: 300 });
+      return { url, key };
+    },
+
     addImages: async ({ images }) => {
       console.log("addImages called");
-      try {
-        const imagesMapped = images.map((img) => {
-          return {
-            id: img.id,
-            artist: img.artist || null,
-            suburb: img.suburb || "",
-            locationData: img.locationData,
-            uploadedAt: img.uploadedAt || new Date().toISOString(),
-            capped: img.capped || null,
-            path: `/uploads/${img.path}`,
-            isOnServer: true,
-          };
-        });
 
-        console.log("Mapped images:", imagesMapped);
-        const parsed = imageObjectsSchema.safeParse(imagesMapped);
+      try {
+        const uploadedImages = await Promise.all(
+          images.map(async (img) => {
+            return {
+              id: img.id || crypto.randomUUID(),
+              artist: img.artist || null,
+              suburb: img.suburb || "",
+              locationData: {
+                latitude: img.locationData.latitude,
+                longitude: img.locationData.longitude,
+              },
+              uploadedAt: img.uploadedAt || new Date().toISOString(),
+              capped: img.capped || null,
+              path: img.path,
+              isOnServer: true,
+            };
+          })
+        );
+
+        const validImages = uploadedImages.filter(Boolean);
+        if (validImages.length === 0) {
+          return { success: false, message: "No images could be processed" };
+        }
+        const parsed = imageObjectsSchema.safeParse(validImages);
         if (!parsed.success) {
-          console.error("Validation errors in zod:", parsed.error.errors);
+          console.error("Validation errors:", parsed.error.errors);
           return {
             success: false,
             message: "Validation errors",
@@ -85,19 +109,12 @@ const resolvers = {
         }
 
         await addToServer(parsed.data);
+
+        return { success: true, message: "Images uploaded successfully!" };
       } catch (err) {
         console.error("Error processing images:", err);
-
-        return {
-          success: false,
-          message: "Error processing images",
-        };
+        return { success: false, message: "Error processing images" };
       }
-
-      return {
-        success: true,
-        message: "Images added successfully",
-      };
     },
 
     deleteImage: async (id) => {
@@ -139,8 +156,8 @@ const resolvers = {
     },
 
     updateImage: async ({ id, updatedData }) => {
-      console.log("updateImage called with ID:", id);
-      return await updateImageOnServer(id, updatedData);
+      const res = await updateImageOnServer(id, updatedData);
+      return res;
     },
   },
 };

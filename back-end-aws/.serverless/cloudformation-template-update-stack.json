@@ -80,6 +80,15 @@
                     "arn:aws:dynamodb:ap-southeast-2:412969475996:table/Images",
                     "arn:aws:dynamodb:ap-southeast-2:412969475996:table/Artists"
                   ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:PutObject",
+                    "s3:PutObjectAcl",
+                    "s3:GetObject"
+                  ],
+                  "Resource": "arn:aws:s3:::melbglyphs/uploads/*"
                 }
               ]
             }
@@ -106,7 +115,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-ap-southeast-2-c37dbad8-c80f",
-          "S3Key": "serverless/images-graphql/dev/1762176382907-2025-11-03T13:26:22.907Z/images-graphql.zip"
+          "S3Key": "serverless/images-graphql/dev/1762256986587-2025-11-04T11:49:46.587Z/images-graphql.zip"
         },
         "Handler": "graphql-lambda.handler",
         "Runtime": "nodejs18.x",
@@ -130,14 +139,14 @@
         "GraphqlLogGroup"
       ]
     },
-    "GraphqlLambdaVersionwjeODBGHbmGAtaFghhsM2XQvJX8u8Lm8QZDOxAjpKGo": {
+    "GraphqlLambdaVersionqb54nlk15H61hsdxnIbr0YxU0hVKj2M0zAl7aXRK2Sc": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GraphqlLambdaFunction"
         },
-        "CodeSha256": "FUNckbe39MxPs0MVZKcGwM5937pIjRMT2tntX4n1+II="
+        "CodeSha256": "OfGXxu7PVbuvenRZHFGNrlrXKCHIESMAnw1NYs/zYlU="
       }
     },
     "HttpApi": {
@@ -280,7 +289,7 @@
     "GraphqlLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GraphqlLambdaVersionwjeODBGHbmGAtaFghhsM2XQvJX8u8Lm8QZDOxAjpKGo"
+        "Ref": "GraphqlLambdaVersionqb54nlk15H61hsdxnIbr0YxU0hVKj2M0zAl7aXRK2Sc"
       },
       "Export": {
         "Name": "sls-images-graphql-dev-GraphqlLambdaFunctionQualifiedArn"

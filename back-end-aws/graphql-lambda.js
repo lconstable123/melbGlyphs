@@ -1,12 +1,22 @@
 import { graphql, buildSchema } from "graphql";
 import resolvers from "./schema/resolvers.js"; // your resolvers file
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*", // or your front-end URL
+  // "Access-Control-Allow-Credentials": true,
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "POST,OPTIONS",
+};
 // Define GraphQL schema as SDL
 const schema = buildSchema(`
     type LocationData {
     latitude: Float!
     longitude: Float!
   }
+    type PresignedUrl {
+  url: String!
+  key: String!
+}
 
   type Image {
     id: ID!
@@ -70,6 +80,7 @@ const schema = buildSchema(`
     addImages(images: [ImageMetaInput!]!): ImageResponse!
     deleteImage(id: ID!): ImageResponse!
     updateImage(id: ID!, updatedData: partialImageInput!): ImageResponse!
+    getPresignedUrl(filename: String!, contentType: String!): PresignedUrl!
   }
 `);
 
@@ -78,21 +89,18 @@ export const handler = async (event) => {
   if (event.requestContext.http.method === "OPTIONS") {
     return {
       statusCode: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      },
+      headers: corsHeaders,
       body: null,
     };
   }
+  // console.log("Received POST body:", event.body);
 
-  console.log("Received event:", JSON.stringify(event, null, 2));
   // Parse the incoming GraphQL request
   if (!event.body) {
     console.error("Missing body in request");
     return {
       statusCode: 400,
+      headers: corsHeaders,
       body: JSON.stringify({ error: "Missing body in request" }),
     };
   }
@@ -104,6 +112,7 @@ export const handler = async (event) => {
     console.error("Error parsing JSON body:", err);
     return {
       statusCode: 400,
+      headers: corsHeaders,
       body: JSON.stringify({ error: "Invalid JSON body" }),
     };
   }
@@ -122,17 +131,14 @@ export const handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": "true",
-      },
+      headers: corsHeaders,
       body: JSON.stringify(result),
     };
   } catch (err) {
     console.error("GraphQL execution error:", err);
     return {
       statusCode: 500,
+      headers: corsHeaders,
       body: JSON.stringify({ error: "Internal Server Error" }),
     };
   }

@@ -6,7 +6,7 @@ import { defaultLocation } from "../src/lib/data";
 import toast from "react-hot-toast";
 import type { TImage, TuploadImage } from "@/lib/types";
 export const GeoMap = () => {
-  const { uploadedImages, setInspectingImage, allImages } =
+  const { uploadedImages, setInspectingImage, allImages, hardMapReset } =
     useLocationContext();
   const { setMode, mode } = useLocationContext();
   const markersRef = useRef<mapboxgl.Marker[]>([]);
@@ -46,7 +46,8 @@ export const GeoMap = () => {
 
     // Add new markers
     allImages.forEach((img) => {
-      if (!img.locationData) return;
+      if (!img || !img.id || !img.path || !img.locationData) return;
+      // toast.success(`Adding marker for ${allImages.length} images`);
       const loc = img.locationData;
       if (
         !loc ||
@@ -55,9 +56,7 @@ export const GeoMap = () => {
       )
         return;
       const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL!;
-      const absoluteUrl = img.isOnServer
-        ? `${VITE_SERVER_URL}${img.path}`
-        : img.path;
+      const absoluteUrl = img.isOnServer ? img.path : img.path;
 
       // Custom marker element
       const markerEl = document.createElement("div");
@@ -123,7 +122,7 @@ export const GeoMap = () => {
         });
       }
     }
-  }, [uploadedImages, allImages]);
+  }, [uploadedImages, allImages, hardMapReset]);
 
   return (
     <div

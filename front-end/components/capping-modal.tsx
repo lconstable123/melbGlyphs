@@ -24,6 +24,7 @@ import {
 import { ChevronDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GET_ARTISTS } from "@/lib/gql-utils";
+import { useLocationContext } from "@/lib/providers/location-provider";
 
 export const CappingModal = ({
   handleSetCapping,
@@ -37,13 +38,12 @@ export const CappingModal = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { data, loading, error, refetch } =
-    useQuery<TGQLGetArtists>(GET_ARTISTS);
+  const { artistList, refreshArtistList } = useLocationContext();
   return (
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        refetch();
+        refreshArtistList();
         if (!open && iscapped) {
           handleSetCapping(iscapped);
         }
@@ -116,19 +116,17 @@ export const CappingModal = ({
                   align="start"
                   className=" max-h-60  overflow-y-auto"
                 >
-                  {!loading &&
-                    !error &&
-                    data?.artists.map((artist, index) => (
-                      <SelectItem
-                        key={artist + index}
-                        value={artist}
-                        onClick={() => {
-                          handleSetCapping(artist);
-                        }}
-                      >
-                        {artist}
-                      </SelectItem>
-                    ))}
+                  {artistList.map((artist, index) => (
+                    <SelectItem
+                      key={artist + index}
+                      value={artist}
+                      onClick={() => {
+                        handleSetCapping(artist);
+                      }}
+                    >
+                      {artist}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

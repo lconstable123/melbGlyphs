@@ -37,6 +37,14 @@ provider:
             - arn:aws:dynamodb:ap-southeast-2:412969475996:table/Images
             - arn:aws:dynamodb:ap-southeast-2:412969475996:table/Artists
 
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:PutObjectAcl
+            - s3:GetObject # optional, if you want to read
+          Resource:
+            - arn:aws:s3:::melbglyphs/uploads/*
+
 functions:
   graphql:
     handler: graphql-lambda.handler

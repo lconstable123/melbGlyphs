@@ -24,6 +24,7 @@ import {
   GetImages,
   DeleteImage,
   UpdateImage,
+  GetArtists,
 } from "../gql-utils";
 type TLocationContext = {
   serverImages: TImages;
@@ -42,6 +43,10 @@ type TLocationContext = {
     updatedImage: TPartialImage,
     key: string
   ) => Promise<void>;
+  artistList: string[];
+  refreshArtistList: () => Promise<void>;
+  hardMapReset: boolean;
+  handleHardMapReset: () => void;
 };
 
 const LocationContext = createContext<TLocationContext | undefined>(undefined);
@@ -60,17 +65,27 @@ export const LocationProvider = ({
   const [mode, setMode] = useState<Tmode>("initial");
   const [uploading, setUploading] = useState<boolean>(false);
   const [inspectingImage, setInspectingImage] = useState<TImage | null>(null);
+  const [artistList, setArtistList] = useState<string[]>([]);
+  const [hardMapReset, setHardMapReset] = useState<boolean>(false);
 
   const handleRefreshServerImages = async () => {
     try {
-      const { data: images } = await GetImages();
+      toast.success("Refreshing server images...");
+      const images = await GetImages();
 
       // toast.success("Server images refreshed");
-      console.log("Fetched images from server:", images);
-      setServerImages(images?.images || []);
+      // console.log("Fetched images from server:", images);
+      setServerImages(images || []);
     } catch (error) {
       toast.error("Failed to refresh server images");
     }
+  };
+  const handleHardMapReset = () => {
+    setHardMapReset((prev) => !prev);
+  };
+  const refreshArtistList = async () => {
+    const artists = await GetArtists();
+    setArtistList(artists || []);
   };
 
   const handleDeleteImage = async (key: string) => {
@@ -94,12 +109,13 @@ export const LocationProvider = ({
     // toast.success("Updating image... key:" + key + "Data:");
     // console.log("Updating image with ID:", key, "Data:", updatedImage);
     const result = await UpdateImage(key, updatedImage);
-    if (!result.data?.updateImage?.success) {
+    if (!result.success) {
       toast.error("Failed to update image");
       return;
     }
     // toast.success("Image updated successfully");
     handleRefreshServerImages();
+    handleHardMapReset();
   };
 
   useEffect(() => {
@@ -122,6 +138,10 @@ export const LocationProvider = ({
         handleRefreshServerImages,
         handleDeleteImage,
         handleUpdateImage,
+        artistList,
+        refreshArtistList,
+        hardMapReset,
+        handleHardMapReset,
       }}
     >
       {children}

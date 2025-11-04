@@ -38,16 +38,23 @@ export const useFetchLocation = (
     latitude,
     longitude,
   }: TlocationData) => {
-    const { data } = await ReverseGeocode(latitude || 0, longitude || 0);
-    if (!data || data?.reverseGeocode === null) {
+    const { reverseGeocode: suburb } = await ReverseGeocode(
+      latitude || 0,
+      longitude || 0
+    );
+    // toast.success(data);
+    if (!suburb) {
       toast.error("Failed to fetch suburb name for the given coordinates.");
       return;
     }
-    handleSetUploadedSuburb(data?.reverseGeocode || null);
-
-    useEffect(() => {
-      HandleReverseGeocode(location as TlocationData);
-    }, [location]);
+    toast.success("Fetched suburb: " + suburb);
+    handleSetUploadedSuburb(suburb || null);
   };
+
+  useEffect(() => {
+    toast.success("Suburb updating based on location data.");
+    HandleReverseGeocode(location as TlocationData);
+  }, [location]);
+
   return {};
 };

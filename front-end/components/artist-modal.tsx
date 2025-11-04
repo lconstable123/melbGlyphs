@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import { GET_ARTISTS } from "@/lib/gql-utils";
 import type { TGQLGetArtists } from "@/lib/types";
 import { useQuery } from "@apollo/client/react";
+import { useLocationContext } from "@/lib/providers/location-provider";
 
 export const ArtistModal = ({
   artist,
@@ -37,13 +38,14 @@ export const ArtistModal = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { data, loading, error, refetch } =
-    useQuery<TGQLGetArtists>(GET_ARTISTS);
+  const { refreshArtistList, artistList } = useLocationContext();
+  // const { data, loading, error, refetch } =
+  //   useQuery<TGQLGetArtists>(GET_ARTISTS);
   return (
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        refetch();
+        refreshArtistList();
         if (!open && artist) {
           handleSetArtist(artist);
         }
@@ -114,19 +116,17 @@ export const ArtistModal = ({
                   align="start"
                   className=" max-h-60  overflow-y-auto"
                 >
-                  {!loading &&
-                    !error &&
-                    data?.artists.map((artist, index) => (
-                      <SelectItem
-                        key={artist + index}
-                        value={artist}
-                        onClick={() => {
-                          handleSetArtist(artist);
-                        }}
-                      >
-                        {artist}
-                      </SelectItem>
-                    ))}
+                  {artistList.map((artist, index) => (
+                    <SelectItem
+                      key={artist + index}
+                      value={artist}
+                      onClick={() => {
+                        handleSetArtist(artist);
+                      }}
+                    >
+                      {artist}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

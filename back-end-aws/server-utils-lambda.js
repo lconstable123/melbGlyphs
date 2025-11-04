@@ -189,60 +189,68 @@ export const fetchArtists = async () => {
 //-----------------------------------------------------------------UPDATE IMAGE ON SERVER FUNCTION------------------------------------------------------------
 
 export const updateImageOnServer = async (id, updatedData) => {
-  console.log("Updating image in db storage");
+  console.log("Updating image in db storage:", updatedData);
   const PK = `IMAGE#${id}`;
   const SK = "META";
 
   try {
-    let updateExp = [];
-    let expAttrValues = {};
-    for (const key in updatedData) {
-      const value = updatedData[key];
-      if (value !== undefined && value !== null) {
-        const attrName = `#${key}`;
-        const attrValue = `:${key}`;
-        updateExp.push(`${attrName} = ${attrValue}`);
+    const updateExp = [];
+    const expAttrNames = {};
+    const expAttrValues = {};
 
-        if (typeof value === "string") expAttrValues[attrValue] = { S: value };
-        if (typeof value === "boolean")
-          expAttrValues[attrValue] = { BOOL: value };
-        if (typeof value === "number")
-          expAttrValues[attrValue] = { N: value.toString() };
-        else if (typeof value === "object") {
-          // example for locationData
-          if (key === "locationData") {
-            expAttrValues[attrValue] = {
-              M: {
-                latitude: { N: value.latitude.toString() },
-                longitude: { N: value.longitude.toString() },
-              },
-            };
-          }
-        }
+    for (const [key, value] of Object.entries(updatedData)) {
+      if (value === undefined || value === null) continue;
+
+      const attrName = `#${key}`;
+      const attrValue = `:${key}`;
+
+      if (expAttrNames[attrName]) continue; // ✅ avoid duplicate attribute names
+
+      expAttrNames[attrName] = key;
+
+      if (typeof value === "string") {
+        expAttrValues[attrValue] = { S: value };
+      } else if (typeof value === "boolean") {
+        expAttrValues[attrValue] = { BOOL: value };
+      } else if (typeof value === "number") {
+        expAttrValues[attrValue] = { N: value.toString() };
+      } else if (typeof value === "object" && key === "locationData") {
+        expAttrValues[attrValue] = {
+          M: {
+            latitude: { N: value.latitude.toString() },
+            longitude: { N: value.longitude.toString() },
+          },
+        };
+      } else {
+        console.warn("Skipping unsupported field:", key, value);
+        continue;
       }
+
+      updateExp.push(`${attrName} = ${attrValue}`);
     }
+
     if (updateExp.length === 0) {
       return { success: false, message: "No valid fields to update" };
     }
+
     const command = new UpdateItemCommand({
       TableName: IMAGES_TABLE,
       Key: { PK: { S: PK }, SK: { S: SK } },
       UpdateExpression: `SET ${updateExp.join(", ")}`,
-      ExpressionAttributeNames: Object.fromEntries(
-        Object.keys(updatedData).map((k) => [`#${k}`, k])
-      ),
+      ExpressionAttributeNames: expAttrNames,
       ExpressionAttributeValues: expAttrValues,
-      ReturnValues: "ALL_NEW", // returns the updated item
+      ReturnValues: "ALL_NEW",
     });
 
     const result = await dynamo.send(command);
+
+    console.log("✅ Image updated successfully:", result.Attributes);
     return {
       success: true,
       message: `Image with ID ${id} updated successfully`,
-      // updatedItem: result.Attributes,
     };
   } catch (err) {
-    console.error("Error updating image in DynamoDB:", err);
+    console.error("❌ Error updating image in DynamoDB:", err);
     return { success: false, message: "Error updating image" };
   }
 };

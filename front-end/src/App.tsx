@@ -20,7 +20,7 @@ function App() {
         <AddImage />
 
         <section className=" border-amber-300 relative flex flex-col h-full w-full    ">
-          {mode == "explore" && inspectingImage && <ImageInspector />}
+          {inspectingImage && <ImageInspector />}
         </section>
 
         <div
@@ -33,6 +33,14 @@ function App() {
         </div>
       </section>
       <section className=" absolute inset-0 w-screen h-full     mb-2 ">
+        <div className="pointer-events-none absolute inset-0 m-20  z-30 bg-gradient-to-br from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" />
+        <div className="pointer-events-none absolute inset-0 z-4 opacity-5 ">
+          <div className="absolute inset-0 m-20 border-2 z-30" />
+          <div className="absolute top-0 h-20 w-full bg-fuchsia-500   z-4 " />
+          <div className="absolute bottom-0 h-20 w-full  bg-fuchsia-500  z-4 " />
+          <div className="absolute left-0 w-20 h-full  bg-fuchsia-500  z-4 " />
+          <div className="absolute right-0 w-20 h-full  bg-fuchsia-500  z-4 " />
+        </div>
         <GeoMap />
       </section>
       <section className="pointer-events-none  h-screen flex-col items-center w-full flex  z-0   border-white">
@@ -62,6 +70,7 @@ export const ItemDebug = () => {
               <div>{img.locationData?.latitude}</div>
               <div>{img.locationData?.longitude}</div>
               <div>{img.suburb}</div>
+              <div>{img.isOnServer ? "On Server" : "Local"}</div>
               {/* <div>{img.preview}</div> */}
               <div>{img.path}</div>
               <div>{img.capped}</div>

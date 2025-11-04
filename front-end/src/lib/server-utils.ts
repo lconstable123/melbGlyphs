@@ -152,3 +152,38 @@ export const extractLocationData = async (file: File) => {
 
   return locationData;
 };
+
+export const getPresignedUrl = async (
+  filename: string,
+  contentType: string
+) => {
+  const endpoint = import.meta.env.VITE_SERVER_URL!;
+  console.log("key is still:", filename);
+  const presignedResponse = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `
+        mutation GetPresignedUrl($filename: String!, $contentType: String!) {
+          getPresignedUrl(filename: $filename, contentType: $contentType) {
+            url
+            key
+          }
+        }
+      `,
+      variables: {
+        filename: filename,
+        contentType: contentType,
+      },
+    }),
+  });
+
+  if (!presignedResponse.ok) {
+    toast.error("Failed to get presigned URL");
+    throw new Error("Failed to get presigned URL");
+  }
+  toast.success("Successfully retrieved presigned URL");
+  const { data } = await presignedResponse.json();
+  console.log("data from urlfetch:", data);
+  return data.getPresignedUrl;
+};

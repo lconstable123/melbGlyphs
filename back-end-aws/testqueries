@@ -14,13 +14,23 @@ addimages
         },
         "uploadedAt": "2025-11-03T10:00:00Z",
         "capped": null,
-        "path": "banksy.jpg",
+        "path": "/uploads/image1.jpg",
         "isOnServer": true
+       
       }
     ]
   }
 }
 
+presignedurl
+{
+       "query" : "mutation GetPresignedUrl($filename: String!, $contentType: String!) {getPresignedUrl(filename: $filename, contentType: $contentType) {url key},
+        "variables": {
+          "filename": "image1.jpg",
+          "contentType": "image/jpeg"
+        }
+      }
+  
 images
 {
   "query": "query GetImages { images { id artist suburb locationData { latitude longitude } uploadedAt capped path isOnServer } }"

@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { useState } from "react";
 // import type { p } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
 import { useFetchLocation } from "../src/lib/hooks/useFetchLocation";
+import { motion } from "framer-motion";
 export const ImageInspector = () => {
   const {
     inspectingImage,
@@ -47,13 +48,14 @@ export const ImageInspector = () => {
       return { ...prev, capped: iscapped };
     });
   };
-  const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL!;
-  const absoluteUrl = inspectingImage!.isOnServer
-    ? `${VITE_SERVER_URL}${inspectingImage!.path}`
-    : inspectingImage!.path;
 
   return (
-    <div className=" border-0 sm:border-3 border-fuchsia-500 w-full sm:w-150  h-full    pointer-events-auto  ml-auto  z-600  bg-black text-white  ">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className=" border-0 sm:border-3 border-fuchsia-500 w-full sm:w-150  h-full    pointer-events-auto  ml-auto  z-600  bg-black text-white  "
+    >
       {inspectingImage ? (
         <div className="flex flex-col   relative w-full h-full   items-center justify-between gap-4 p-4 ">
           <ImageCloser
@@ -65,7 +67,7 @@ export const ImageInspector = () => {
           />
           <div className="relative w-full overflow-hidden  bg-black h-full">
             <img
-              src={absoluteUrl}
+              src={inspectingImage.path}
               alt="Image"
               className="absolute w-full object-cover p-10 h-full "
             />
@@ -115,6 +117,6 @@ export const ImageInspector = () => {
       ) : (
         <p>No image selected</p>
       )}
-    </div>
+    </motion.div>
   );
 };
