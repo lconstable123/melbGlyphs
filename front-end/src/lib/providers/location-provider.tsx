@@ -92,7 +92,7 @@ export const LocationProvider = ({
     // await DeleteImage(key);
     toast.success("Deleting image...");
     const result = await DeleteImage(key);
-    if (!result.data?.deleteImage?.success) {
+    if (!result?.success) {
       toast.error("Failed to delete image");
       return;
     }

@@ -10,7 +10,8 @@
       "region": "ap-southeast-2",
       "environment": {
         "IMAGES_TABLE": "Images",
-        "ARTISTS_TABLE": "Artists"
+        "ARTISTS_TABLE": "Artists",
+        "S3_BUCKET_NAME": "melbglyphs"
       },
       "httpApi": {
         "cors": {
@@ -159,7 +160,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-ap-southeast-2-c37dbad8-c80f",
-                "S3Key": "serverless/images-graphql/dev/1762256986587-2025-11-04T11:49:46.587Z/images-graphql.zip"
+                "S3Key": "serverless/images-graphql/dev/1762303932908-2025-11-05T00:52:12.908Z/images-graphql.zip"
               },
               "Handler": "graphql-lambda.handler",
               "Runtime": "nodejs18.x",
@@ -169,7 +170,8 @@
               "Environment": {
                 "Variables": {
                   "IMAGES_TABLE": "Images",
-                  "ARTISTS_TABLE": "Artists"
+                  "ARTISTS_TABLE": "Artists",
+                  "S3_BUCKET_NAME": "melbglyphs"
                 }
               },
               "Role": {
@@ -183,14 +185,14 @@
               "GraphqlLogGroup"
             ]
           },
-          "GraphqlLambdaVersionqb54nlk15H61hsdxnIbr0YxU0hVKj2M0zAl7aXRK2Sc": {
+          "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GraphqlLambdaFunction"
               },
-              "CodeSha256": "OfGXxu7PVbuvenRZHFGNrlrXKCHIESMAnw1NYs/zYlU="
+              "CodeSha256": "bcbdqP8AQC+M7gJQUZ9Ct+S51/MM2w8WArBr8vAsu0U="
             }
           },
           "HttpApi": {
@@ -330,7 +332,7 @@
           "GraphqlLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GraphqlLambdaVersionqb54nlk15H61hsdxnIbr0YxU0hVKj2M0zAl7aXRK2Sc"
+              "Ref": "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U"
             },
             "Export": {
               "Name": "sls-images-graphql-dev-GraphqlLambdaFunctionQualifiedArn"
@@ -402,7 +404,7 @@
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "GraphqlLambdaVersionqb54nlk15H61hsdxnIbr0YxU0hVKj2M0zAl7aXRK2Sc"
+        "versionLogicalId": "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U"
       }
     },
     "configValidationMode": "warn",
@@ -423,7 +425,7 @@
     "artifact": "C:\\Users\\luke\\Desktop\\webdev\\melbGlyphs\\back-end-aws\\.serverless\\images-graphql.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/images-graphql/dev/1762256986587-2025-11-04T11:49:46.587Z",
+    "artifactDirectoryName": "serverless/images-graphql/dev/1762303932908-2025-11-05T00:52:12.908Z",
     "artifact": "images-graphql.zip"
   }
 }

@@ -117,9 +117,9 @@ export const UploadCard = ({
             artist={artist}
             handleSetArtist={handleSetUploadedArtist}
           />
-          {/* <p id="location-suburb" className="font-medium pt-2">
+          <p id="location-suburb" className="font-medium pt-2">
             {suburb}
-          </p> */}
+          </p>
           <div
             id="location-coordinates"
             className="flex text-white/80 text-[7pt] gap-0 pt-2 "

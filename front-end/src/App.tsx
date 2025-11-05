@@ -33,13 +33,13 @@ function App() {
         </div>
       </section>
       <section className=" absolute inset-0 w-screen h-full     mb-2 ">
-        <div className="pointer-events-none absolute inset-0 m-20  z-30 bg-gradient-to-br from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" />
+        {/* <div className="pointer-events-none absolute inset-0 m-10  z-30 bg-gradient-to-b from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" /> */}
         <div className="pointer-events-none absolute inset-0 z-4 opacity-5 ">
-          <div className="absolute inset-0 m-20 border-2 z-30" />
+          {/* <div className="absolute inset-0 m-10 border-2 z-30" /> */}
           <div className="absolute top-0 h-20 w-full bg-fuchsia-500   z-4 " />
-          <div className="absolute bottom-0 h-20 w-full  bg-fuchsia-500  z-4 " />
-          <div className="absolute left-0 w-20 h-full  bg-fuchsia-500  z-4 " />
-          <div className="absolute right-0 w-20 h-full  bg-fuchsia-500  z-4 " />
+          <div className="absolute bottom-0 h-10 w-full  bg-fuchsia-500  z-4 " />
+          <div className="absolute left-0 w-10 h-full  bg-fuchsia-500  z-4 " />
+          <div className="absolute right-0 w-10 h-full  bg-fuchsia-500  z-4 " />
         </div>
         <GeoMap />
       </section>

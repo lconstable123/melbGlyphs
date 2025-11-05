@@ -47,12 +47,12 @@ export const useFetchLocation = (
       toast.error("Failed to fetch suburb name for the given coordinates.");
       return;
     }
-    toast.success("Fetched suburb: " + suburb);
+    // toast.success("Fetched suburb: " + suburb);
     handleSetUploadedSuburb(suburb || null);
   };
 
   useEffect(() => {
-    toast.success("Suburb updating based on location data.");
+    // toast.success("Suburb updating based on location data.");
     HandleReverseGeocode(location as TlocationData);
   }, [location]);
 

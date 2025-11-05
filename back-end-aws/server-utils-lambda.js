@@ -147,19 +147,22 @@ export const fetchImages = async () => {
         TableName: IMAGES_TABLE,
       })
     );
-    const images = result.Items.map((item) => ({
-      id: item.PK.S.replace("IMAGE#", ""),
-      artist: item.artist?.S || null,
-      suburb: item.suburb?.S || null,
-      locationData: {
-        latitude: parseFloat(item.locationData.M?.latitude?.N || 0),
-        longitude: parseFloat(item.locationData.M?.longitude?.N || 0),
-      },
-      uploadedAt: item.uploadedAt?.S,
-      capped: item.capped?.S || null,
-      path: item.path.S,
-      isOnServer: item.isOnServer.BOOL,
-    }));
+
+    const images = result.Items.filter((item) => item && item.PK).map(
+      (item) => ({
+        id: item.PK.S.replace("IMAGE#", ""),
+        artist: item.artist?.S || null,
+        suburb: item.suburb?.S || null,
+        locationData: {
+          latitude: parseFloat(item.locationData?.M?.latitude?.N || 0),
+          longitude: parseFloat(item.locationData?.M?.longitude?.N || 0),
+        },
+        uploadedAt: item.uploadedAt?.S || null,
+        capped: item.capped?.S || null,
+        path: item.path?.S || null,
+        isOnServer: item.isOnServer?.BOOL || null,
+      })
+    );
     console.log("Fetched images:", images.length);
     return images;
   } catch (err) {

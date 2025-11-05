@@ -64,7 +64,7 @@ export const ImageUploads = () => {
         };
       });
 
-      toast.success("Images prepared for upload");
+      // toast.success("Images prepared for upload");
       console.log("Prepped images:", preppedImages);
 
       // Get presigned URLs

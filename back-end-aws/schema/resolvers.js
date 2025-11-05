@@ -1,9 +1,14 @@
 // import gql from "graphql-tag";
 // import { GraphQLUpload } from "graphql-upload-minimal";
 // import { GraphQLJSON } from "graphql-type-json";
-const s3 = new S3Client({ region: "ap-southeast-2" });
+
 const BUCKET_NAME = process.env.BUCKET_NAME || "melbglyphs";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
+const s3 = new S3Client({ region: "ap-southeast-2" });
 import {
   addToServer,
   deleteImageFromServer,
@@ -15,14 +20,18 @@ import {
 
 // import fs from "fs";
 // import path from "path";
-import { imageObjectsSchema } from "../utils/schemas.js";
+import { imageObjectsSchema, imageObjectSchema } from "../utils/schemas.js";
 
 const resolvers = {
   Query: {
     images: async () => {
       console.log("images query called");
       const images = await fetchImages();
-      return images;
+      const validResults = images
+        .map((image) => imageObjectSchema.safeParse(image))
+        .filter((result) => result.success)
+        .map((result) => result.data);
+      return validResults;
     },
     artists: async () => {
       console.log("artists query called");
@@ -117,7 +126,7 @@ const resolvers = {
       }
     },
 
-    deleteImage: async (id) => {
+    deleteImage: async ({ id }) => {
       console.log("deleteImage called with ID:", id);
 
       const localURL = await deleteImageFromServer(id);
@@ -127,32 +136,53 @@ const resolvers = {
           message: "Error deleting image metadata",
         };
       }
-      // console.log("metadata deleted, moving to file delete");
-      // try {
-      //   const filePath = path.join(process.cwd(), localURL);
-      //   if (!fs.existsSync(filePath)) {
-      //     console.warn("File to delete does not exist:", filePath);
-      //     return {
-      //       success: false,
-      //       message: "File does not exist",
-      //     };
-      //   } else {
-      //     console.log("Deleting file at path:", filePath);
-      //   }
 
-      //   await fs.promises.unlink(filePath);
-      // } catch (err) {
-      //   console.error("Error deleting file:", err);
-      //   return {
-      //     success: false,
-      //     message: "Error deleting file",
-      //   };
-      // }
-
-      return {
-        success: true,
-        message: `Image with ID ${id} deleted successfully`,
+      const params = {
+        Bucket: process.env.S3_BUCKET_NAME || "melbglyphs",
+        Key: key,
       };
+
+      //probe existence
+      try {
+        await s3.send(new HeadObjectCommand(params));
+        console.log(`File ${key} exists in S3 bucket, proceeding to delete.`);
+      } catch (err) {
+        if (err.name === "NotFound") {
+          console.warn(`File ${key} not found in S3 bucket.`);
+          return {
+            success: false,
+            message: "File not found",
+          };
+        } else {
+          console.error("Error deleting file from S3:", err);
+          return {
+            success: false,
+            message: "Error deleting file from S3",
+          };
+        }
+      }
+
+      await s3.send(new DeleteObjectCommand(params));
+      console.log(`File ${key} deleted successfully from S3.`);
+
+      try {
+        await s3.send(new HeadObjectCommand(params));
+        return { success: false, message: "Failed to delete object" };
+      } catch (err) {
+        if (err.name === "NotFound") {
+          console.warn(`file not found, this is good!`);
+          return {
+            success: true,
+            message: "file deleted successfully",
+          };
+        } else {
+          console.error("Error deleting file from S3:", err);
+          return {
+            success: false,
+            message: "Error querying deleted file from S3",
+          };
+        }
+      }
     },
 
     updateImage: async ({ id, updatedData }) => {

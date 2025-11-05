@@ -9,6 +9,7 @@ provider:
   environment:
     IMAGES_TABLE: Images
     ARTISTS_TABLE: Artists
+    S3_BUCKET_NAME: melbglyphs
 
   httpApi:
     cors:

@@ -112,7 +112,7 @@ export const GetImages = async () => {
 };
 
 export const UpdateImage = async (id: string, updatedData: TPartialImage) => {
-  toast.success(`Updating image ${id} on server...`);
+  // toast.success(`Updating image ${id} on server...`);
   const endpoint =
     "https://h7ucg7tgah.execute-api.ap-southeast-2.amazonaws.com/graphql";
 
