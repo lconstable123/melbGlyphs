@@ -153,8 +153,8 @@ export const DeleteImage = async (id: string) => {
     console.error("GraphQL error:", error);
     return { success: false, message: "Network error" };
   }
-  console.log("DeleteImage result:", res);
   const result = await res.json();
+  console.log("DeleteImage result:", res);
   return result.data.deleteImage;
 };
 export const ReverseGeocode = async (latitude: number, longitude: number) => {
