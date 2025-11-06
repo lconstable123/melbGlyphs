@@ -65,7 +65,7 @@ export const transformServerImageData = (
 };
 
 export const DeleteImage = async (key: string) => {
-  toast.success("Deleting image...");
+  // toast.success("Deleting image...");
   const apiUrl = "http://localhost:5000";
   try {
     const response = await fetch(`${apiUrl}/image/${key}`, {
@@ -75,10 +75,10 @@ export const DeleteImage = async (key: string) => {
       throw new Error("Failed to delete image");
     }
     const result = await response.json();
-    toast.success("Image deleted successfully");
+    // toast.success("Image deleted successfully");
   } catch (err) {
     console.error("Error deleting image:", err);
-    toast.error("Failed to delete image");
+    // toast.error("Failed to delete image");
   }
 };
 
@@ -103,12 +103,12 @@ export const UpdateImage = async (
     // toast.success("Image updated successfully");
   } catch (err) {
     console.error("Error updating image:", err);
-    toast.error("Failed to update image");
+    // toast.error("Failed to update image");
   }
 };
 
 export const ImageConverter = async (image: TuploadImage) => {
-  toast.success("Converting image hankde...");
+  // toast.success("Converting image hankde...");
   const formData = new FormData();
   if (!image.file) return;
   formData.append("image", image.file);
@@ -124,7 +124,7 @@ export const ImageConverter = async (image: TuploadImage) => {
   }
 
   const data = await res.json();
-  toast.success("Image Converted!");
+  // toast.success("Image Converted!");
   const convertedImage: TuploadImage = {
     id: image.id,
     converted: true,
@@ -182,7 +182,7 @@ export const getPresignedUrl = async (
     toast.error("Failed to get presigned URL");
     throw new Error("Failed to get presigned URL");
   }
-  toast.success("Successfully retrieved presigned URL");
+  // toast.success("Successfully retrieved presigned URL");
   const { data } = await presignedResponse.json();
   console.log("data from urlfetch:", data);
   return data.getPresignedUrl;

@@ -34,13 +34,13 @@ function App() {
       </section>
       <section className=" absolute inset-0 w-screen h-full     mb-2 ">
         {/* <div className="pointer-events-none absolute inset-0 m-10  z-30 bg-gradient-to-b from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" /> */}
-        <div className="pointer-events-none absolute inset-0 z-4 opacity-5 ">
-          {/* <div className="absolute inset-0 m-10 border-2 z-30" /> */}
+        {/* <div className="pointer-events-none absolute inset-0 z-4 opacity-5 ">
+
           <div className="absolute top-0 h-20 w-full bg-fuchsia-500   z-4 " />
           <div className="absolute bottom-0 h-10 w-full  bg-fuchsia-500  z-4 " />
           <div className="absolute left-0 w-10 h-full  bg-fuchsia-500  z-4 " />
           <div className="absolute right-0 w-10 h-full  bg-fuchsia-500  z-4 " />
-        </div>
+        </div> */}
         <GeoMap />
       </section>
       <section className="pointer-events-none  h-screen flex-col items-center w-full flex  z-0   border-white">
@@ -55,12 +55,14 @@ function App() {
 export default App;
 
 export const ItemDebug = () => {
-  const { uploadedImages, allImages, serverImages } = useLocationContext();
+  const { uploadedImages, allImages, serverImages, inspectingImage } =
+    useLocationContext();
 
   return (
     <div className="pointer-events-auto select-all w-full h-20  absolute top-50 left-4 z-500">
       <ul className="flex flex-col gap-4 text-[7pt] text-left">
         <p>Server Images</p>
+        <p>mode: {inspectingImage ? inspectingImage.id : "None"}</p>
         {serverImages?.map((img) => {
           // console.log(img.preview);
           return (

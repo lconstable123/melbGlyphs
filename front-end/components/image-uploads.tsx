@@ -126,7 +126,7 @@ export const ImageUploads = () => {
 
       setUploadedImages([]);
       handleRefreshServerImages();
-      toast.success("Images uploaded successfully!");
+      // toast.success("Images uploaded successfully!");
     } catch (err) {
       handleAnimateError();
       console.error("Error uploading images:", err);

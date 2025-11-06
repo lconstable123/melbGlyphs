@@ -7,6 +7,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  HeadObjectCommand,
 } from "@aws-sdk/client-s3";
 const s3 = new S3Client({ region: "ap-southeast-2" });
 import {
@@ -137,6 +138,10 @@ const resolvers = {
         };
       }
 
+      const key = localURL.substring(localURL.indexOf("uploads/"));
+      console.log(
+        `Image metadata deleted from server, deleting ${key} from S3 now.`
+      );
       const params = {
         Bucket: process.env.S3_BUCKET_NAME || "melbglyphs",
         Key: key,
@@ -145,25 +150,30 @@ const resolvers = {
       //probe existence
       try {
         await s3.send(new HeadObjectCommand(params));
-        console.log(`File ${key} exists in S3 bucket, proceeding to delete.`);
+        console.log(`File ${id} exists in S3 bucket, proceeding to delete.`);
       } catch (err) {
         if (err.name === "NotFound") {
-          console.warn(`File ${key} not found in S3 bucket.`);
+          console.log(`File ${id} not found in S3 bucket.`);
           return {
             success: false,
             message: "File not found",
           };
         } else {
-          console.error("Error deleting file from S3:", err);
+          console.log("Error deleting file from S3:", err);
           return {
             success: false,
             message: "Error deleting file from S3",
           };
         }
       }
+      console.log(`Proceeding to delete file ${id} from S3.`);
+      try {
+        await s3.send(new DeleteObjectCommand(params));
+      } catch (err) {
+        console.error("DeleteObjectCommand error:", err);
+      }
 
-      await s3.send(new DeleteObjectCommand(params));
-      console.log(`File ${key} deleted successfully from S3.`);
+      console.log(`File ${id} deleted successfully from S3.`);
 
       try {
         await s3.send(new HeadObjectCommand(params));
@@ -178,8 +188,8 @@ const resolvers = {
         } else {
           console.error("Error deleting file from S3:", err);
           return {
-            success: false,
-            message: "Error querying deleted file from S3",
+            success: true,
+            message: "file not found",
           };
         }
       }

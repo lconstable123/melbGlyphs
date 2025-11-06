@@ -65,7 +65,7 @@ export const AddImages = async (
 ): Promise<{ success: boolean; message?: string }> => {
   const endpoint =
     "https://h7ucg7tgah.execute-api.ap-southeast-2.amazonaws.com/graphql";
-  toast.success(`Adding images to server...${endpoint}`);
+  // toast.success(`Adding images to server...${endpoint}`);
   const res = await fetch(endpoint, {
     method: "POST",
     headers: {
@@ -84,7 +84,7 @@ export const AddImages = async (
     toast.error(data?.data?.addImages?.message || "Error uploading images");
     return { success: false, message: data?.data?.addImages?.message };
   } else {
-    toast.success("Images added successfully!");
+    // toast.success("Images added successfully!");
     return { success: true, message: "sucess" };
   }
 };
@@ -132,7 +132,7 @@ export const UpdateImage = async (id: string, updatedData: TPartialImage) => {
     return { success: false, message: "Network error" };
   }
   const result = await res.json();
-  toast.success("UpdateImage result:", result.message);
+  // toast.success("UpdateImage result:", result.message);
   return result.data.updateImage;
 };
 
@@ -153,6 +153,7 @@ export const DeleteImage = async (id: string) => {
     console.error("GraphQL error:", error);
     return { success: false, message: "Network error" };
   }
+  console.log("DeleteImage result:", res);
   const result = await res.json();
   return result.data.deleteImage;
 };

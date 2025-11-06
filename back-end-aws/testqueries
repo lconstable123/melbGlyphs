@@ -24,7 +24,7 @@ addimages
 
 presignedurl
 {
-       "query" : "mutation GetPresignedUrl($filename: String!, $contentType: String!) {getPresignedUrl(filename: $filename, contentType: $contentType) {url key},
+       "query" : "mutation GetPresignedUrl($filename: String!, $contentType: String!) {getPresignedUrl(filename: $filename, contentType: $contentType) {url key} }",
         "variables": {
           "filename": "image1.jpg",
           "contentType": "image/jpeg"

@@ -70,7 +70,7 @@ export const LocationProvider = ({
 
   const handleRefreshServerImages = async () => {
     try {
-      toast.success("Refreshing server images...");
+      // toast.success("Refreshing server images...");
       const images = await GetImages();
 
       // toast.success("Server images refreshed");
@@ -90,7 +90,7 @@ export const LocationProvider = ({
 
   const handleDeleteImage = async (key: string) => {
     // await DeleteImage(key);
-    toast.success("Deleting image...");
+    // toast.success("Deleting image...");
     const result = await DeleteImage(key);
     if (!result?.success) {
       toast.error("Failed to delete image");
@@ -98,6 +98,7 @@ export const LocationProvider = ({
     }
     // toast.success("Image deleted successfully");
     setInspectingImage(null);
+    setMode("explore");
     handleRefreshServerImages();
   };
 
@@ -121,6 +122,12 @@ export const LocationProvider = ({
   useEffect(() => {
     handleRefreshServerImages();
   }, []);
+
+  useEffect(() => {
+    if (mode === "upload") {
+      setInspectingImage(null);
+    }
+  }, [mode]);
 
   return (
     <LocationContext.Provider

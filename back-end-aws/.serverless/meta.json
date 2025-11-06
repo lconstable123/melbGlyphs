@@ -1,6 +1,6 @@
 {
   "C:\\Users\\luke\\Desktop\\webdev\\melbGlyphs\\back-end-aws\\serverless.yml": {
-    "versionFramework": "4.22.0",
+    "versionFramework": "4.23.0",
     "servicePath": "C:\\Users\\luke\\Desktop\\webdev\\melbGlyphs\\back-end-aws\\serverless.yml",
     "serviceConfigFileName": "serverless.yml",
     "service": {
@@ -54,7 +54,9 @@
                 "Action": [
                   "s3:PutObject",
                   "s3:PutObjectAcl",
-                  "s3:GetObject"
+                  "s3:GetObject",
+                  "s3:DeleteObject",
+                  "s3:ListBucket"
                 ],
                 "Resource": "arn:aws:s3:::melbglyphs/uploads/*"
               }
@@ -151,7 +153,9 @@
                           "Action": [
                             "s3:PutObject",
                             "s3:PutObjectAcl",
-                            "s3:GetObject"
+                            "s3:GetObject",
+                            "s3:DeleteObject",
+                            "s3:ListBucket"
                           ],
                           "Resource": "arn:aws:s3:::melbglyphs/uploads/*"
                         }
@@ -180,7 +184,7 @@
               "Properties": {
                 "Code": {
                   "S3Bucket": "serverless-framework-deployments-ap-southeast-2-c37dbad8-c80f",
-                  "S3Key": "serverless/images-graphql/dev/1762303932908-2025-11-05T00:52:12.908Z/images-graphql.zip"
+                  "S3Key": "serverless/images-graphql/dev/1762414420826-2025-11-06T07:33:40.826Z/images-graphql.zip"
                 },
                 "Handler": "graphql-lambda.handler",
                 "Runtime": "nodejs18.x",
@@ -205,14 +209,14 @@
                 "GraphqlLogGroup"
               ]
             },
-            "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U": {
+            "GraphqlLambdaVersionRyozr22I2BLKOvEcrbshF7JHhk6dBzxycBlct9Xpmso": {
               "Type": "AWS::Lambda::Version",
               "DeletionPolicy": "Retain",
               "Properties": {
                 "FunctionName": {
                   "Ref": "GraphqlLambdaFunction"
                 },
-                "CodeSha256": "bcbdqP8AQC+M7gJQUZ9Ct+S51/MM2w8WArBr8vAsu0U="
+                "CodeSha256": "NpOfeTYOgttoMyqERuGHRqzekftT9k0TAGCZLgGxlJw="
               }
             },
             "HttpApi": {
@@ -356,7 +360,7 @@
             "GraphqlLambdaFunctionQualifiedArn": {
               "Description": "Current Lambda function version",
               "Value": {
-                "Ref": "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U"
+                "Ref": "GraphqlLambdaVersionRyozr22I2BLKOvEcrbshF7JHhk6dBzxycBlct9Xpmso"
               },
               "Export": {
                 "Name": "sls-images-graphql-dev-GraphqlLambdaFunctionQualifiedArn"
@@ -427,7 +431,7 @@
           "timeout": 6,
           "runtime": "nodejs18.x",
           "vpc": {},
-          "versionLogicalId": "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U"
+          "versionLogicalId": "GraphqlLambdaVersionRyozr22I2BLKOvEcrbshF7JHhk6dBzxycBlct9Xpmso"
         }
       }
     },
@@ -479,7 +483,9 @@
               "Action": [
                 "s3:PutObject",
                 "s3:PutObjectAcl",
-                "s3:GetObject"
+                "s3:GetObject",
+                "s3:DeleteObject",
+                "s3:ListBucket"
               ],
               "Resource": "arn:aws:s3:::melbglyphs/uploads/*"
             }
@@ -576,7 +582,9 @@
                         "Action": [
                           "s3:PutObject",
                           "s3:PutObjectAcl",
-                          "s3:GetObject"
+                          "s3:GetObject",
+                          "s3:DeleteObject",
+                          "s3:ListBucket"
                         ],
                         "Resource": "arn:aws:s3:::melbglyphs/uploads/*"
                       }
@@ -605,7 +613,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-ap-southeast-2-c37dbad8-c80f",
-                "S3Key": "serverless/images-graphql/dev/1762303932908-2025-11-05T00:52:12.908Z/images-graphql.zip"
+                "S3Key": "serverless/images-graphql/dev/1762414420826-2025-11-06T07:33:40.826Z/images-graphql.zip"
               },
               "Handler": "graphql-lambda.handler",
               "Runtime": "nodejs18.x",
@@ -630,14 +638,14 @@
               "GraphqlLogGroup"
             ]
           },
-          "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U": {
+          "GraphqlLambdaVersionRyozr22I2BLKOvEcrbshF7JHhk6dBzxycBlct9Xpmso": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GraphqlLambdaFunction"
               },
-              "CodeSha256": "bcbdqP8AQC+M7gJQUZ9Ct+S51/MM2w8WArBr8vAsu0U="
+              "CodeSha256": "NpOfeTYOgttoMyqERuGHRqzekftT9k0TAGCZLgGxlJw="
             }
           },
           "HttpApi": {
@@ -781,7 +789,7 @@
           "GraphqlLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U"
+              "Ref": "GraphqlLambdaVersionRyozr22I2BLKOvEcrbshF7JHhk6dBzxycBlct9Xpmso"
             },
             "Export": {
               "Name": "sls-images-graphql-dev-GraphqlLambdaFunctionQualifiedArn"
@@ -834,7 +842,7 @@
       "serviceProvider": null,
       "instanceParameters": null
     },
-    "serviceRawFile": "service: images-graphql\r\nframeworkVersion: \">=4.0.0\"\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: nodejs18.x\r\n  region: ap-southeast-2\r\n\r\n  environment:\r\n    IMAGES_TABLE: Images\r\n    ARTISTS_TABLE: Artists\r\n    S3_BUCKET_NAME: melbglyphs\r\n\r\n  httpApi:\r\n    cors:\r\n      allowedOrigins:\r\n        - \"*\"\r\n      allowedHeaders:\r\n        - \"Content-Type\"\r\n        - \"Authorization\"\r\n      allowedMethods:\r\n        - OPTIONS\r\n        - POST\r\n      allowCredentials: false\r\n\r\n  iam:\r\n    role:\r\n      statements:\r\n        - Effect: Allow\r\n          Action:\r\n            - dynamodb:PutItem\r\n            - dynamodb:UpdateItem\r\n            - dynamodb:BatchWriteItem\r\n            - dynamodb:DeleteItem\r\n            - dynamodb:Scan\r\n            - dynamodb:Query\r\n          Resource:\r\n            - arn:aws:dynamodb:ap-southeast-2:412969475996:table/Images\r\n            - arn:aws:dynamodb:ap-southeast-2:412969475996:table/Artists\r\n\r\n        - Effect: Allow\r\n          Action:\r\n            - s3:PutObject\r\n            - s3:PutObjectAcl\r\n            - s3:GetObject # optional, if you want to read\r\n          Resource:\r\n            - arn:aws:s3:::melbglyphs/uploads/*\r\n\r\nfunctions:\r\n  graphql:\r\n    handler: graphql-lambda.handler\r\n    events:\r\n      - httpApi:\r\n          path: /graphql\r\n          method: POST\r\n      - httpApi:\r\n          path: /graphql\r\n          method: OPTIONS\r\n",
+    "serviceRawFile": "service: images-graphql\r\nframeworkVersion: \">=4.0.0\"\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: nodejs18.x\r\n  region: ap-southeast-2\r\n\r\n  environment:\r\n    IMAGES_TABLE: Images\r\n    ARTISTS_TABLE: Artists\r\n    S3_BUCKET_NAME: melbglyphs\r\n\r\n  httpApi:\r\n    cors:\r\n      allowedOrigins:\r\n        - \"*\"\r\n      allowedHeaders:\r\n        - \"Content-Type\"\r\n        - \"Authorization\"\r\n      allowedMethods:\r\n        - OPTIONS\r\n        - POST\r\n      allowCredentials: false\r\n\r\n  iam:\r\n    role:\r\n      statements:\r\n        - Effect: Allow\r\n          Action:\r\n            - dynamodb:PutItem\r\n            - dynamodb:UpdateItem\r\n            - dynamodb:BatchWriteItem\r\n            - dynamodb:DeleteItem\r\n            - dynamodb:Scan\r\n            - dynamodb:Query\r\n          Resource:\r\n            - arn:aws:dynamodb:ap-southeast-2:412969475996:table/Images\r\n            - arn:aws:dynamodb:ap-southeast-2:412969475996:table/Artists\r\n\r\n        - Effect: Allow\r\n          Action:\r\n            - s3:PutObject\r\n            - s3:PutObjectAcl\r\n            - s3:GetObject # optional, if you want to read\r\n            - s3:DeleteObject\r\n            - s3:ListBucket\r\n          Resource:\r\n            - arn:aws:s3:::melbglyphs/uploads/*\r\n\r\nfunctions:\r\n  graphql:\r\n    handler: graphql-lambda.handler\r\n    events:\r\n      - httpApi:\r\n          path: /graphql\r\n          method: POST\r\n      - httpApi:\r\n          path: /graphql\r\n          method: OPTIONS\r\n",
     "command": [
       "deploy"
     ],
@@ -847,12 +855,12 @@
     "serviceProviderAwsCfStackName": "images-graphql-dev",
     "serviceProviderAwsCfStackId": "arn:aws:cloudformation:ap-southeast-2:412969475996:stack/images-graphql-dev/1f931960-b86f-11f0-9dda-0217263930ed",
     "serviceProviderAwsCfStackCreated": "2025-11-03T04:39:46.700Z",
-    "serviceProviderAwsCfStackUpdated": "2025-11-05T00:43:39.539Z",
+    "serviceProviderAwsCfStackUpdated": "2025-11-06T07:26:23.793Z",
     "serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
     "serviceProviderAwsCfStackOutputs": [
       {
         "OutputKey": "GraphqlLambdaFunctionQualifiedArn",
-        "OutputValue": "arn:aws:lambda:ap-southeast-2:412969475996:function:images-graphql-dev-graphql:86",
+        "OutputValue": "arn:aws:lambda:ap-southeast-2:412969475996:function:images-graphql-dev-graphql:91",
         "Description": "Current Lambda function version",
         "ExportName": "sls-images-graphql-dev-GraphqlLambdaFunctionQualifiedArn"
       },
@@ -962,7 +970,9 @@
                       "Action": [
                         "s3:PutObject",
                         "s3:PutObjectAcl",
-                        "s3:GetObject"
+                        "s3:GetObject",
+                        "s3:DeleteObject",
+                        "s3:ListBucket"
                       ],
                       "Resource": "arn:aws:s3:::melbglyphs/uploads/*"
                     }
@@ -991,7 +1001,7 @@
           "Properties": {
             "Code": {
               "S3Bucket": "serverless-framework-deployments-ap-southeast-2-c37dbad8-c80f",
-              "S3Key": "serverless/images-graphql/dev/1762303932908-2025-11-05T00:52:12.908Z/images-graphql.zip"
+              "S3Key": "serverless/images-graphql/dev/1762414420826-2025-11-06T07:33:40.826Z/images-graphql.zip"
             },
             "Handler": "graphql-lambda.handler",
             "Runtime": "nodejs18.x",
@@ -1016,14 +1026,14 @@
             "GraphqlLogGroup"
           ]
         },
-        "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U": {
+        "GraphqlLambdaVersionRyozr22I2BLKOvEcrbshF7JHhk6dBzxycBlct9Xpmso": {
           "Type": "AWS::Lambda::Version",
           "DeletionPolicy": "Retain",
           "Properties": {
             "FunctionName": {
               "Ref": "GraphqlLambdaFunction"
             },
-            "CodeSha256": "bcbdqP8AQC+M7gJQUZ9Ct+S51/MM2w8WArBr8vAsu0U="
+            "CodeSha256": "NpOfeTYOgttoMyqERuGHRqzekftT9k0TAGCZLgGxlJw="
           }
         },
         "HttpApi": {
@@ -1166,7 +1176,7 @@
         "GraphqlLambdaFunctionQualifiedArn": {
           "Description": "Current Lambda function version",
           "Value": {
-            "Ref": "GraphqlLambdaVersion1kqxMPvVB94y217rns1gWp6MZLt3Goh7aGfgoFs66U"
+            "Ref": "GraphqlLambdaVersionRyozr22I2BLKOvEcrbshF7JHhk6dBzxycBlct9Xpmso"
           },
           "Export": {
             "Name": "sls-images-graphql-dev-GraphqlLambdaFunctionQualifiedArn"

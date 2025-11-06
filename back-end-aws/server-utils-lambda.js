@@ -95,7 +95,7 @@ export const deleteImageFromServer = async (id) => {
       })
     );
     if (!Attributes) {
-      console.log("Image not found in DynamoDB:", id);
+      console.log("Image not found in DynamoDB:", PK);
       return {
         success: false,
         message: "Image not found",
