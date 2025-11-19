@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { ImgSkeleton } from "./loading-card";
 
 import type { TuploadImage, TuploadImages } from "../src/lib/types";
-import { ImageConverter } from "../src/lib/server-utils";
+import { ImageConverter } from "../src/lib/gql-utils";
 import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "../src/lib/providers/location-provider";
 import { uploadImages } from "../src/lib/server-utils";

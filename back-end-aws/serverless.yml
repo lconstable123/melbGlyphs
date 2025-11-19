@@ -51,6 +51,9 @@ provider:
 functions:
   graphql:
     handler: graphql-lambda.handler
+    layers:
+      - arn:aws:lambda:ap-southeast-2:412969475996:layer:heic-sharpv2:2
+
     events:
       - httpApi:
           path: /graphql

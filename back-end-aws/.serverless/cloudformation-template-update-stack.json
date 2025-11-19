@@ -117,7 +117,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-ap-southeast-2-c37dbad8-c80f",
-          "S3Key": "serverless/images-graphql/dev/1762414420826-2025-11-06T07:33:40.826Z/images-graphql.zip"
+          "S3Key": "serverless/images-graphql/dev/1763551053620-2025-11-19T11:17:33.620Z/images-graphql.zip"
         },
         "Handler": "graphql-lambda.handler",
         "Runtime": "nodejs18.x",
@@ -136,20 +136,23 @@
             "IamRoleLambdaExecution",
             "Arn"
           ]
-        }
+        },
+        "Layers": [
+          "arn:aws:lambda:ap-southeast-2:412969475996:layer:heic-sharpv2:2"
+        ]
       },
       "DependsOn": [
         "GraphqlLogGroup"
       ]
     },
-    "GraphqlLambdaVersionRyozr22I2BLKOvEcrbshF7JHhk6dBzxycBlct9Xpmso": {
+    "GraphqlLambdaVersionKTXsGjWqfaxBEo3yIVNeV5ndFKm03sgKyzkWv7RarQ": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GraphqlLambdaFunction"
         },
-        "CodeSha256": "NpOfeTYOgttoMyqERuGHRqzekftT9k0TAGCZLgGxlJw="
+        "CodeSha256": "AP/QiEcauRrE+fpPkza+bRM9nSAyJhoegBa+PdeaBDw="
       }
     },
     "HttpApi": {
@@ -292,7 +295,7 @@
     "GraphqlLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GraphqlLambdaVersionRyozr22I2BLKOvEcrbshF7JHhk6dBzxycBlct9Xpmso"
+        "Ref": "GraphqlLambdaVersionKTXsGjWqfaxBEo3yIVNeV5ndFKm03sgKyzkWv7RarQ"
       },
       "Export": {
         "Name": "sls-images-graphql-dev-GraphqlLambdaFunctionQualifiedArn"

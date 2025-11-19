@@ -58,6 +58,13 @@ const typeDefs = gql`
     message: String!
   }
 
+  type ConvertedImage {
+    key: String!
+    filename: String!
+    mimeType: String!
+    data: String!
+  }
+
   type Query {
     images: [Image!]!
     reverseGeocode(latitude: Float!, longitude: Float!): String
@@ -68,6 +75,7 @@ const typeDefs = gql`
     addImages(images: [ImageMetaInput!]!): ImageResponse!
     deleteImage(id: ID!): ImageResponse!
     updateImage(id: ID!, updatedData: partialImageInput!): ImageResponse!
+    convertImage(base64: String!, filename: String!): ConvertedImage!
   }
 `;
 

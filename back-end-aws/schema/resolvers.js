@@ -1,6 +1,9 @@
 // import gql from "graphql-tag";
 // import { GraphQLUpload } from "graphql-upload-minimal";
 // import { GraphQLJSON } from "graphql-type-json";
+// import { fileTypeFromBuffer } from "file-type";
+// import heicConvert from "heic-convert";
+// import sharp from "sharp";
 
 const BUCKET_NAME = process.env.BUCKET_NAME || "melbglyphs";
 import {
@@ -199,7 +202,45 @@ const resolvers = {
       const res = await updateImageOnServer(id, updatedData);
       return res;
     },
+
+    //end mutation
   },
 };
 
 export default resolvers;
+
+//  convertImage: async (_, { base64, filename }) => {
+//       try {
+//         let buffer = Buffer.from(base64, "base64");
+
+//         const fileType = await fileTypeFromBuffer(buffer);
+//         console.log("Detected MIME type:", fileType?.mime);
+
+//         // Convert HEIC/HEIF → JPEG
+//         if (
+//           fileType?.mime === "image/heic" ||
+//           fileType?.mime === "image/heif"
+//         ) {
+//           console.log("Converting HEIC/HEIF to JPEG...");
+//           buffer = await heicConvert({
+//             buffer,
+//             format: "JPEG",
+//             quality: 1,
+//           });
+//         }
+
+//         // Convert any input → JPEG
+//         const jpegBuffer = await sharp(buffer).jpeg().toBuffer();
+//         const base64Image = jpegBuffer.toString("base64");
+
+//         return {
+//           key: Date.now().toString(),
+//           filename,
+//           mimeType: "image/jpeg",
+//           data: base64Image,
+//         };
+//       } catch (error) {
+//         console.error("Error converting image:", error);
+//         throw new Error("Image conversion failed");
+//       }
+//     },

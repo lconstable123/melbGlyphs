@@ -1,8 +1,10 @@
 import { gql } from "@apollo/client";
 import { print } from "graphql";
 import { useMutation, useQuery } from "@apollo/client/react";
-import type { TPartialImage } from "./types";
+import heic2any from "heic2any";
+import type { TPartialImage, TuploadImage } from "./types";
 import { toast } from "react-hot-toast";
+import { extractLocationData } from "./server-utils";
 export const ADD_IMAGES = `
   mutation AddImages($images: [ImageMetaInput!]!) {
     addImages(images: $images) {
@@ -58,6 +60,17 @@ export const GET_ARTISTS = `
   query getArtists {
     artists
   }
+`;
+
+export const CONVERT_IMAGE = `
+mutation Convert($base64: String!, $filename: String!) {
+  convertImage(base64: $base64, filename: $filename) {
+    key
+    filename
+    mimeType
+    data
+  }
+}
 `;
 
 export const AddImages = async (
@@ -206,4 +219,38 @@ export const toBase64 = (file: File): Promise<string> => {
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
   });
+};
+
+export const ImageConverter = async (image: TuploadImage) => {
+  if (!image.file) return;
+
+  try {
+    let convertedBlob = await heic2any({
+      blob: image.file,
+      toType: "image/jpeg",
+    });
+
+    if (Array.isArray(convertedBlob)) {
+      convertedBlob = convertedBlob[0];
+    }
+    const convertedFile = new File(
+      [convertedBlob],
+      image.file.name.replace(/\.heic$/i, ".jpg"),
+      { type: "image/jpeg" }
+    );
+
+    const convertedImage: TuploadImage = {
+      id: image.id,
+      converted: true,
+      file: convertedFile,
+      locationData: await extractLocationData(image.file), // or convertedFile if needed
+      path: URL.createObjectURL(convertedFile),
+      isOnServer: false,
+    };
+
+    return convertedImage;
+  } catch (err) {
+    console.error("Image conversion failed:", err);
+    return null;
+  }
 };

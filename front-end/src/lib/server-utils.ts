@@ -107,34 +107,34 @@ export const UpdateImage = async (
   }
 };
 
-export const ImageConverter = async (image: TuploadImage) => {
-  // toast.success("Converting image hankde...");
-  const formData = new FormData();
-  if (!image.file) return;
-  formData.append("image", image.file);
-  const apiUrl = import.meta.env.VITE_SERVER_URL!;
+// export const ImageConverter = async (image: TuploadImage) => {
+//   // toast.success("Converting image hankde...");
+//   const formData = new FormData();
+//   if (!image.file) return;
+//   formData.append("image", image.file);
+//   const apiUrl = import.meta.env.VITE_SERVER_URL!;
 
-  const res = await fetch(`${apiUrl}/convert`, {
-    method: "POST",
-    body: formData,
-  });
-  if (!res.ok) {
-    console.error("Image conversion failed");
-    return;
-  }
+//   const res = await fetch(`${apiUrl}/convert`, {
+//     method: "POST",
+//     body: formData,
+//   });
+//   if (!res.ok) {
+//     console.error("Image conversion failed");
+//     return;
+//   }
 
-  const data = await res.json();
-  // toast.success("Image Converted!");
-  const convertedImage: TuploadImage = {
-    id: image.id,
-    converted: true,
-    file: image.file,
-    locationData: await extractLocationData(image.file),
-    path: `data:${data.image.mimeType};base64,${data.image.data}`,
-    isOnServer: false,
-  };
-  return convertedImage;
-};
+//   const data = await res.json();
+//   // toast.success("Image Converted!");
+//   const convertedImage: TuploadImage = {
+//     id: image.id,
+//     converted: true,
+//     file: image.file,
+//     locationData: await extractLocationData(image.file),
+//     path: `data:${data.image.mimeType};base64,${data.image.data}`,
+//     isOnServer: false,
+//   };
+//   return convertedImage;
+// };
 
 export const extractLocationData = async (file: File) => {
   let locationData: { latitude: number; longitude: number } | null = null;

@@ -1,5 +1,5 @@
 import { useLocationContext } from "../src/lib/providers/location-provider";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN!;
 import { defaultLocation } from "../src/lib/data";
@@ -9,6 +9,7 @@ export const GeoMap = () => {
   const { uploadedImages, setInspectingImage, allImages, hardMapReset } =
     useLocationContext();
   const { setMode, mode } = useLocationContext();
+  const [loading, setLoading] = useState(true); // <-- loading state
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -29,6 +30,9 @@ export const GeoMap = () => {
     });
 
     mapRef.current = map;
+    map.on("load", () => {
+      setLoading(false); // map has finished loading
+    });
 
     return () => {
       // markersRef.current.forEach((marker) => marker.remove());
@@ -39,6 +43,7 @@ export const GeoMap = () => {
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
+    setLoading(true);
 
     // Remove old markers
     markersRef.current.forEach((marker) => marker.remove());
@@ -125,15 +130,22 @@ export const GeoMap = () => {
   }, [uploadedImages, allImages, hardMapReset]);
 
   return (
-    <div
-      onClick={() => {
-        // if (mode !== "explore") {
-        // setMode("explore");
-        // toast.success("Explore mode activated");
-        // }
-      }}
-      ref={mapContainerRef}
-      className="absolute w-full h-screen "
-    />
+    <>
+      {/* {loading && (
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="text-white text-xl">Loading map...</div>
+        </div>
+      )} */}
+      <div
+        onClick={() => {
+          // if (mode !== "explore") {
+          // setMode("explore");
+          // toast.success("Explore mode activated");
+          // }
+        }}
+        ref={mapContainerRef}
+        className="absolute w-full h-screen "
+      />
+    </>
   );
 };

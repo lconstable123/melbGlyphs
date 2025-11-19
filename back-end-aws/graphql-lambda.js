@@ -1,6 +1,6 @@
 import { graphql, buildSchema } from "graphql";
 import resolvers from "./schema/resolvers.js"; // your resolvers file
-
+// import sharp from "sharp";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*", // or your front-end URL
   // "Access-Control-Allow-Credentials": true,
@@ -106,6 +106,10 @@ export const handler = async (event) => {
   }
 
   let body;
+  //test
+
+  // console.log("Sharp version:", sharp.versions);
+  // console.log("Platform:", process.platform, process.arch);
   try {
     body = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
   } catch (err) {
