@@ -148,6 +148,7 @@ export const extractLocationData = async (file: File) => {
     }
   } catch (error) {
     console.error("Error extracting location data:", error);
+    return null;
   }
 
   return locationData;

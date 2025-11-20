@@ -8,6 +8,7 @@ import { ImageConverter } from "../src/lib/gql-utils";
 import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "../src/lib/providers/location-provider";
 import { uploadImages } from "../src/lib/server-utils";
+import { extractLocationData } from "@/lib/api-utils";
 // import { useLocationContext } from "@/lib/providers/location-provider";
 
 export const ImageUploader = () => {
@@ -24,7 +25,7 @@ export const ImageUploader = () => {
     // return data;
   };
 
-  const handleImageChange = (e: any) => {
+  const handleImageChange = async (e: any) => {
     setMode("explore");
     if (!e.target.files) return;
     let files: File[] = Array.from(e.target.files!);
@@ -35,53 +36,55 @@ export const ImageUploader = () => {
       return;
     }
 
-    const imagePreviews = files.map((file, index) => {
-      const alreadyExists = uploadedImages.some(
-        (existingImg) =>
-          existingImg.file?.name === file.name &&
-          existingImg.file?.size === file.size &&
-          existingImg.file?.lastModified === file.lastModified
-      );
-      if (alreadyExists) {
-        toast.error(`Image is already in the upload list`);
-        return null;
-      }
+    const imagePreviews = await Promise.all(
+      files.map(async (file, index) => {
+        const alreadyExists = uploadedImages.some(
+          (existingImg) =>
+            existingImg.file?.name === file.name &&
+            existingImg.file?.size === file.size &&
+            existingImg.file?.lastModified === file.lastModified
+        );
+        if (alreadyExists) {
+          toast.error(`Image is already in the upload list`);
+          return null;
+        }
 
-      if (
-        file.type === "image/png" ||
-        file.type === "image/jpeg" ||
-        file.type === "image/jpg" ||
-        file.type === "image/tif"
-      ) {
-        const id = crypto.randomUUID();
-        return {
-          id,
-          converted: true,
-          file,
+        if (
+          file.type === "image/png" ||
+          file.type === "image/jpeg" ||
+          file.type === "image/jpg" ||
+          file.type === "image/tif"
+        ) {
+          const id = crypto.randomUUID();
+          const locationData = await extractLocationData(file);
+          return {
+            id,
+            converted: true,
+            file,
+            locationData: locationData || null,
+            uploadedAt: new Date().toISOString(),
+            capped: false,
+            path: URL.createObjectURL(file),
+            isOnServer: false,
+          };
+        } else {
+          //file is not jpg, call endpoint and convert
+          const id = crypto.randomUUID();
+          const convertingImage: TuploadImage = {
+            id,
+            converted: false,
+            file,
+            locationData: null,
+            path: file.name,
+            isOnServer: false,
+          };
+          HandleImageConverter(convertingImage);
 
-          locationData: null,
-          uploadedAt: new Date().toISOString(),
-          capped: false,
-          path: URL.createObjectURL(file),
-          isOnServer: false,
-        };
-      } else {
-        //file is not jpg, call endpoint and convert
-        const id = crypto.randomUUID();
-        const convertingImage: TuploadImage = {
-          id,
-          converted: false,
-          file,
-          locationData: null,
-          path: file.name,
-          isOnServer: false,
-        };
-        HandleImageConverter(convertingImage);
-
-        // return loading placeholder
-        return convertingImage;
-      }
-    });
+          // return loading placeholder
+          return convertingImage;
+        }
+      })
+    );
     setUploadedImages((prevImages) => [
       ...prevImages,
       ...(imagePreviews.filter(Boolean) as TuploadImages),
