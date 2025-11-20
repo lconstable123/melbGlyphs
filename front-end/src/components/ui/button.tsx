@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-black border border-fuchsia-500 transition-all duration-300 outline  hover:outline-fuchsia-500 outline-fuchsia-500/60   focus-visible:outline-none focus-visible:ring-1 ",
+          " border text-gray-200 hover:text-white  bg-black border-white/60 transition-all duration-300 outline  hover:outline-fuchsia-500 outline-fuchsia-500/60   focus-visible:outline-none focus-visible:ring-1 ",
         onImage:
           "bg-black text-black  p-3  text-primary-foreground inline-flex cursor-pointer border-fuchsia-500/100 hover:border-fuchsia-500/100  ",
         destructive:

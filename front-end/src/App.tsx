@@ -7,44 +7,47 @@ import { ImageInspector } from "../components/image-inspector";
 import { ImageUploads } from "../components/image-uploads";
 import { AddImage } from "../components/add-image";
 import { TopBar } from "../components/topbar";
+import { BottomBar } from "../components/bottombar";
 import { cn } from "./lib/utils";
 function App() {
-  const { uploadedImages, mode, inspectingImage, allImages } =
+  const { uploadedImages, mode, inspectingImage, allImages, setMode } =
     useLocationContext();
   return (
     <div className="flex-col flex justify-start ">
-      <section className="overflow-hidden select-none pointer-events-none flex flex-col  absolute inset-0   z-30    ">
+      <section className="overflow-hidden select-none pointer-events-none flex flex-col absolute inset-0 z-30">
         <TopBar />
         {/* <TopBar /> */}
         {/* <ItemDebug /> */}
         <AddImage />
 
-        <section className=" border-amber-300 relative flex flex-col h-full w-full    ">
+        <section className="border-amber-300 relative flex flex-col h-full w-full    ">
           {inspectingImage && <ImageInspector />}
         </section>
+        <BottomBar images={allImages} />
 
         <div
           className={cn(
-            "transition-all duration-500 absolute top-0 left-0 w-full  flex  z-400 ",
+            "transition-all duration-500 absolute top-0 left-0 w-full flex z-400 ",
             mode !== "upload" ? "-translate-x-full" : "translate-x-0"
           )}
         >
           <SplashScreen />
         </div>
       </section>
-      <section className=" absolute inset-0 w-screen h-full     mb-2 ">
-        {/* <div className="pointer-events-none absolute inset-0 m-10  z-30 bg-gradient-to-b from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" /> */}
-        {/* <div className="pointer-events-none absolute inset-0 z-4 opacity-5 ">
-
-          <div className="absolute top-0 h-20 w-full bg-fuchsia-500   z-4 " />
-          <div className="absolute bottom-0 h-10 w-full  bg-fuchsia-500  z-4 " />
-          <div className="absolute left-0 w-10 h-full  bg-fuchsia-500  z-4 " />
-          <div className="absolute right-0 w-10 h-full  bg-fuchsia-500  z-4 " />
-        </div> */}
+      <section
+        onClick={() => {
+          setMode("explore");
+        }}
+        className="absolute inset-0 w-screen h-full mb-2"
+      >
+        <div className="pointer-events-none absolute inset-0   z-30 bg-gradient-to-b from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" />
+        {mode !== "explore" && (
+          <div className="overflow-none  cursor-default absolute inset-0  z-10 " />
+        )}
         <GeoMap />
       </section>
-      <section className="pointer-events-none  h-screen flex-col items-center w-full flex  z-0   border-white">
-        <div className="mt-auto mb-5 pointer-events-auto ">
+      <section className="pointer-events-none h-screen flex-col items-center w-full flex z-0 border-white">
+        <div className="mt-auto mb-10 pointer-events-auto ">
           <ImageUploads />
         </div>
       </section>

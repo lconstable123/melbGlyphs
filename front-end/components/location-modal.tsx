@@ -16,6 +16,7 @@ import {
 } from "../src/components/ui/dialog";
 import type { TlocationData } from "../src/lib/types";
 import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
 
 export const LocationModal = ({
   location,
@@ -73,20 +74,33 @@ export const LocationModal = ({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className=" cursor-pointer group h-full w-full  "
+        className={cn(
+          "hover-outline rounded-md bg-black cursor-pointer group h-full w-full *:**:not-[]:l   ",
+          "  focus-visible:outline-none focus-visible:ring-1"
+        )}
       >
         <div
           className={`
-           hover-outline rounded-lg outline-fuchsia-500/40
+           
           `}
         >
-          <Button role="button" type="button" size="sm" variant="onImage">
+          {/* <Button role="button" type="button" size="sm" variant="onImage">
             {location !== null
               ? suburb
                 ? suburb
                 : "Edit Location"
               : "Select Location"}
-          </Button>
+          </Button> */}
+          <p
+            className={`
+              text-gray-200 hover:text-white transition-all duration-400 text-sm  px-2 py-1 rounded-md  `}
+          >
+            {location !== null
+              ? suburb
+                ? suburb
+                : "Edit Location"
+              : "Select Location"}
+          </p>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-black h-100 py-10">

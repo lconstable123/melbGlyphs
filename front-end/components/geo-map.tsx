@@ -3,149 +3,162 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN!;
 import { defaultLocation } from "../src/lib/data";
+import type { TImage } from "@/lib/types";
 import toast from "react-hot-toast";
-import type { TImage, TuploadImage } from "@/lib/types";
+import { fadeInOnce } from "@/lib/utils";
+
 export const GeoMap = () => {
   const { uploadedImages, setInspectingImage, allImages, hardMapReset } =
     useLocationContext();
+
   const { setMode, mode } = useLocationContext();
-  const [loading, setLoading] = useState(true); // <-- loading state
+
+  const [loading, setLoading] = useState(true);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const popupsRef = useRef<mapboxgl.Popup[]>([]);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const animatedMarkers = useRef<Set<string>>(new Set());
+  const animatedPopups = useRef<Set<string>>(new Set());
   const handlePopupClick = (img: TImage) => {
+    // toast.success("Inspecting image details...");
     setInspectingImage(img);
   };
 
+  // -----------------------
+  // Init map (ONLY ONCE)
+  // -----------------------
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/dark-v11",
-      center: [defaultLocation[1], defaultLocation[0]], // [lng, lat]
+      center: [defaultLocation[1], defaultLocation[0]],
       zoom: 10,
       pitch: 60,
       bearing: -30,
     });
 
     mapRef.current = map;
-    map.on("load", () => {
-      setLoading(false); // map has finished loading
-    });
 
-    return () => {
-      // markersRef.current.forEach((marker) => marker.remove());
-      map.remove();
-    };
-  }, [mapContainerRef.current]);
+    map.on("load", () => setLoading(false));
 
+    return () => map.remove();
+  }, []); // <-- FIXED (no ref deps!)
+
+  // -----------------------
+  // Render markers + popups
+  // -----------------------
   useEffect(() => {
+    // toast.success("Loading map...");
     const map = mapRef.current;
     if (!map) return;
+
     setLoading(true);
 
     // Remove old markers
-    markersRef.current.forEach((marker) => marker.remove());
+    markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
+    popupsRef.current.forEach((p) => p.remove());
+    popupsRef.current = [];
 
-    // Add new markers
     allImages.forEach((img) => {
       if (!img || !img.id || !img.path || !img.locationData) return;
-      // toast.success(`Adding marker for ${allImages.length} images`);
+
       const loc = img.locationData;
-      if (
-        !loc ||
-        typeof loc.longitude !== "number" ||
-        typeof loc.latitude !== "number"
-      )
+      if (typeof loc.longitude !== "number" || typeof loc.latitude !== "number")
         return;
-      const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL!;
-      const absoluteUrl = img.isOnServer ? img.path : img.path;
 
-      // Custom marker element
+      const absoluteUrl = img.path;
+
+      // Marker icon
       const markerEl = document.createElement("div");
-      markerEl.className = "custom-marker";
-      markerEl.style.width = "50px";
-      markerEl.style.height = "50px";
-      markerEl.style.backgroundImage = `url(${absoluteUrl})`;
-      markerEl.style.backgroundSize = "cover";
-      // markerEl.style.border = "3px solid black";
-      markerEl.style.borderRadius = "50%";
-      markerEl.style.boxShadow = "0 0 5px rgba(0,0,0,0.5)";
-      markerEl.style.cursor = "pointer";
+      markerEl.classList.add("custom-marker");
 
+      markerEl.style.backgroundImage = `url(${absoluteUrl})`;
+
+      // Popup — never closes
       const popup = new mapboxgl.Popup({
         offset: 25,
         className: "custom-popup",
-      }).setHTML(`
-  <div 
-  
-  class="map-popup__content">
-    <div class="map-popup__image-wrapper">
-      <img src="${absoluteUrl}" alt="Image" class="map-popup__image"  />
-      <div class="map-popup__fader" ></div>
-      <p class="map-popup__update-details">Inspect and Update deets</p>
-    </div>
-    <div class="map-popup__artist">
-      <p>${img.artist ? img.artist : "Unknown Artist"}</p>
-    </div>
-  </div>
+        closeOnClick: false,
+        closeOnMove: false,
+        closeButton: false,
+        anchor: "bottom",
+      }).setLngLat([loc.longitude, loc.latitude]).setHTML(`
+        <div class="map-popup__content">
+          <div class="map-popup__image-wrapper">
+            <img src="${absoluteUrl}" class="map-popup__image" />
+
+          </div>
+          <div class="map-popup__artist">
+            <p>${img.artist ?? "Unknown Artist"}</p>
+          </div>
+        </div>
       `);
 
-      popup.on("open", () => {
-        const popupEl = popup.getElement();
-        if (!popupEl) return; // exit if undefined
+      // Always open immediately AND forever
+      popup.addTo(map);
+      popupsRef.current.push(popup);
 
-        const contentEl = popupEl.querySelector(".map-popup__content");
-        if (contentEl) {
-          contentEl.addEventListener("click", () => {
-            handlePopupClick(img); // your click handler
-            popup.remove();
-          });
+      const el = popup.getElement();
+      el?.querySelector(".map-popup__content")?.addEventListener(
+        "click",
+        () => {
+          handlePopupClick(img);
         }
-      });
+      );
 
-      // Add marker
       const marker = new mapboxgl.Marker(markerEl, {
         rotationAlignment: "map",
       })
         .setLngLat([loc.longitude, loc.latitude])
-        .setPopup(popup) // attach popup
+
         .addTo(map);
+
       markersRef.current.push(marker);
+      const el2 = marker.getElement();
+
+      el2?.addEventListener("click", () => {
+        handlePopupClick(img);
+      });
     });
 
-    // Fly to the last uploaded image
-    if (uploadedImages.length) {
-      const last = uploadedImages[uploadedImages.length - 1];
-      if (last.locationData) {
+    // Fly to latest uploaded image
+    if (uploadedImages.length > 0) {
+      const last = uploadedImages.at(-1)!;
+      const loc = last.locationData;
+      if (loc) {
         map.flyTo({
-          center: [last.locationData.longitude, last.locationData.latitude],
+          center: [loc.longitude, loc.latitude],
           zoom: 15,
           essential: true,
         });
       }
     }
+
+    const ZOOM_THRESHOLD = 8.42;
+    const onZoom = () => {
+      const zoom = map.getZoom();
+      // toast.success("Zoom level: " + zoom.toFixed(2));
+      popupsRef.current.forEach((popup) => {
+        if (zoom < ZOOM_THRESHOLD) {
+          popup.remove();
+        } else {
+          if (!popup.isOpen()) popup.addTo(map);
+        }
+      });
+    };
+
+    map.on("zoom", onZoom);
+
+    setLoading(false);
   }, [uploadedImages, allImages, hardMapReset]);
 
   return (
     <>
-      {/* {loading && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="text-white text-xl">Loading map...</div>
-        </div>
-      )} */}
-      <div
-        onClick={() => {
-          // if (mode !== "explore") {
-          // setMode("explore");
-          // toast.success("Explore mode activated");
-          // }
-        }}
-        ref={mapContainerRef}
-        className="absolute w-full h-screen "
-      />
+      <div ref={mapContainerRef} className="absolute w-full h-screen" />
     </>
   );
 };

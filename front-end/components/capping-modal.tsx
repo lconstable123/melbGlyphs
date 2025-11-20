@@ -52,13 +52,13 @@ export const CappingModal = ({
     >
       <DialogTrigger
         className={cn(
-          " rounded-md bg-black cursor-pointer group h-full w-full *:**:not-[]:l   ",
-          "hover-outline  focus-visible:outline-none focus-visible:ring-1"
+          "hover-outline rounded-md bg-black cursor-pointer group h-full w-full *:**:not-[]:l   ",
+          "  focus-visible:outline-none focus-visible:ring-1"
         )}
       >
         <p
           className={`
-             transition-all duration-400 text-sm  px-2 py-1 rounded-md  `}
+              text-gray-200 hover:text-white transition-all duration-400 text-sm  px-2 py-1 rounded-md  `}
         >
           {/* <Button size="sm" variant="onImage" accessability={false}> */}
           {iscapped !== "" && iscapped !== null
@@ -96,7 +96,7 @@ export const CappingModal = ({
                   }
                 }}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="focus-visible:outline-none focus-visible:ring-1 rounded-r-lg pr-2   flex justify-end  items-center absolute right-0 w-60   
+                className="focus-visible:outline-none focus-visible:ring-1 rounded-r-lg pr-2 flex justify-end items-center absolute right-0 w-60   
                 z-2000 h-full top-0  opacity-70"
               >
                 <ChevronDownIcon className="size-4" />
@@ -110,7 +110,7 @@ export const CappingModal = ({
                   handleSetCapping(value);
                 }}
               >
-                <SelectTrigger className="absolute w-full h-full "></SelectTrigger>
+                <SelectTrigger className="absolute w-full h-full"></SelectTrigger>
                 <SelectContent
                   position="popper"
                   align="start"

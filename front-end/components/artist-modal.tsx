@@ -54,23 +54,20 @@ export const ArtistModal = ({
     >
       <DialogTrigger
         className={cn(
-          "bg-black rounded-md   cursor-pointer group h-full w-full *:**:not-[]:l   ",
-          "hover-outline  focus-visible:outline-none focus-visible:ring-1"
+          "bg-black hover-outline rounded-md cursor-pointer group h-full w-full *:**:not-[]:l   ",
+          "     focus-visible:outline-none focus-visible:ring-1"
         )}
       >
         <p
-          className={`
-             transition-all duration-400 text-sm  px-2 py-1 rounded-md  `}
+          className={`text-gray-200 hover:text-white transition-all duration-400 text-sm px-2 py-1 rounded-md  `}
         >
-          {/* <Button size="sm" variant="onImage" accessability={false}> */}
           {artist !== null ? artist : "Tag Artist"}
-          {/* </Button> */}
         </p>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-black   py-10">
+      <DialogContent className="bg-black sm:max-w-[425px] py-10">
         <DialogHeader>
           <DialogTitle className=" text-sm flex justify-between">
-            <p className="select-none">Tag an artist</p>
+            <p className="select-none ">Tag an artist</p>
             <p
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="select-none cursor-pointer"
@@ -96,7 +93,7 @@ export const ArtistModal = ({
                   }
                 }}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="focus-visible:outline-none focus-visible:ring-1 rounded-r-lg pr-2   flex justify-end  items-center absolute right-0 w-60   
+                className="focus-visible:outline-none focus-visible:ring-1 rounded-r-lg pr-2 flex justify-end items-center absolute right-0 w-60   
                 z-2000 h-full top-0  opacity-70"
               >
                 <ChevronDownIcon className="size-4" />

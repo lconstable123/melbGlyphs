@@ -9,14 +9,14 @@ export const TopBar = () => {
     <div
       id="top-bar"
       className={cn(
-        " hidden transition-all sm:flex  gap-2 bg-black  px-5 py-2  h-auto text-sm   w-full  items-center justify-center",
+        " transition-all flex flex-col sm:flex-row  gap-y-1 bg-black  px-5 py-3  h-auto text-sm   w-full  items-center justify-center",
         mode === "initial" ? "" : ""
       )}
     >
       <h1 className={cn("   font-bold  text-neutral-50")}>
         Melbourne Street Project
       </h1>
-      <span className="flex flex-col sm:flex-row ml-auto text-[9pt]  items-center justify-center gap-0 sm:gap-2 ">
+      <span className="flex flex-col sm:flex-row  ml-0 sm:ml-auto text-[9pt]  items-center justify-center gap-0 sm:gap-2 ">
         <h2 className="uppercase underline  ">@VirtuallyAnything.xyz.</h2>
         <p className="font-medium font-bolder">V.0.0.1</p>
       </span>

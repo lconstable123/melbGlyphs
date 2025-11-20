@@ -71,7 +71,7 @@ export const UploadCard = ({
     >
       <div
         id="image-container"
-        className="group relative border border-fuchsia-500 h-50  rounded-sm overflow-hidden  "
+        className="group relative  border-gray-700 h-50  rounded-sm overflow-hidden  "
       >
         <div
           id="whitefader"

@@ -54,10 +54,10 @@ export const ImageInspector = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="  border-fuchsia-500 w-full sm:w-150  h-full    pointer-events-auto  ml-auto  z-600  bg-black text-white  "
+      className="  border border-white/50 w-full sm:w-150  h-full    pointer-events-auto  ml-auto  z-600  bg-black text-white  "
     >
       {inspectingImage ? (
-        <div className="flex flex-col   relative w-full h-full   items-center justify-start gap-4 p-4 ">
+        <div className="flex flex-col   relative w-full h-full   items-center justify-start gap-2 p-2 ">
           <ImageCloser
             type="inspector"
             handleClick={() => {
@@ -72,12 +72,14 @@ export const ImageInspector = () => {
               className="absolute w-full object-cover p-0 h-full "
             />
           </div>
-          <div>
-            <div>
-              <p className="text-2xl font-semibold mt-1">Edit Details</p>
-            </div>
+          <div className=" ">
+            {/* <div>
+              <p className="text-sm text-white/40 font-semibold mt-0">
+                Edit Details
+              </p>
+            </div> */}
 
-            <div className="  border-fuchsia-500 rounded-xl relative flex flex-wrap justify-center gap-4 p-2 mx-10   items-center mt-10 sm:mt-2">
+            <div className="  border-fuchsia-500 rounded-xl relative flex flex-wrap justify-center gap-2 p-0 mx-10   items-center mt-1">
               <div className="w-auto">
                 <ArtistModal
                   style="window"

@@ -17,7 +17,7 @@ p {
   font-family: "Permanent Marker", cursive;
   font-family: "SUSE Mono", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 500;
+  font-weight: 300;
   font-style: normal;
   letter-spacing: 0.05rem;
   line-height: 1rem;
@@ -42,7 +42,7 @@ h2 {
 }
 
 .hover-outline {
-  @apply transition-all duration-300 outline-1 hover:outline-fuchsia-500 outline-fuchsia-500/60;
+  @apply transition-all duration-300 outline-1 hover:outline-white/70 outline-white/20;
 }
 
 #root {
@@ -86,11 +86,30 @@ h2 {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.custom-marker {
+  opacity: 1;
+  width: 65px;
+  height: 65px;
+  background-size: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+  cursor: pointer;
+  transition: opacity 0.5s ease;
+}
+
 .mapboxgl-popup.custom-popup {
   /* padding: 0 !important;
   margin: 0 !important; */
   border: none;
+  opacity: 1;
+  transition: opacity 0.5s ease;
 }
+
+.custom-marker.fade-in,
+.mapboxgl-popup.fade-in {
+  opacity: 1;
+}
+
 .mapboxgl-popup-content {
   background: black !important;
   border: none;
@@ -120,7 +139,7 @@ h2 {
   flex-direction: column;
   border-radius: 5px;
   overflow: hidden;
-  border: 2px solid oklch(66.7% 0.295 132.15);
+  /* border: 1px solid oklch(66.7% 0.295 132.15); */
 }
 .map-popup__update-details {
   position: absolute;
@@ -139,8 +158,8 @@ h2 {
 
 .map-popup__image {
   vertical-align: middle;
-  width: 120px;
-  height: 150px;
+  width: 100px;
+  height: 120px;
   object-fit: cover;
 }
 .map-popup__image-wrapper {

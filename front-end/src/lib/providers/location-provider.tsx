@@ -47,6 +47,7 @@ type TLocationContext = {
   refreshArtistList: () => Promise<void>;
   hardMapReset: boolean;
   handleHardMapReset: () => void;
+  setFilterArtist: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 const LocationContext = createContext<TLocationContext | undefined>(undefined);
@@ -57,12 +58,13 @@ export const LocationProvider = ({
   children: React.ReactNode;
 }) => {
   const [serverImages, setServerImages] = useState<TImages>([]);
+  const [filterArtist, setFilterArtist] = useState<string | null>(null);
   const [uploadedImages, setUploadedImages] = useState<TuploadImages>([]);
   const allImages = [
     ...serverImages,
     ...uploadedImages.map(({ converted, ...rest }) => rest),
-  ];
-  const [mode, setMode] = useState<Tmode>("initial");
+  ].filter((img) => (filterArtist ? img.artist === filterArtist : true));
+  const [mode, setMode] = useState<Tmode>("upload");
   const [uploading, setUploading] = useState<boolean>(false);
   const [inspectingImage, setInspectingImage] = useState<TImage | null>(null);
   const [artistList, setArtistList] = useState<string[]>([]);
@@ -149,6 +151,7 @@ export const LocationProvider = ({
         refreshArtistList,
         hardMapReset,
         handleHardMapReset,
+        setFilterArtist,
       }}
     >
       {children}
