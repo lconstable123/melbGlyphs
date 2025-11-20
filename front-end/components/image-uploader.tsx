@@ -57,6 +57,11 @@ export const ImageUploader = () => {
         ) {
           const id = crypto.randomUUID();
           const locationData = await extractLocationData(file);
+          if (!locationData) {
+            toast.error(
+              `No location data found in image metadata. Please add location manually.`
+            );
+          }
           return {
             id,
             converted: true,
