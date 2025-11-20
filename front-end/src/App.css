@@ -188,6 +188,14 @@ h2 {
   opacity: 1;
 }
 
+.custom-circle-icon div {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

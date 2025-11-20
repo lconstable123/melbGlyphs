@@ -18,7 +18,7 @@ export const TopBar = () => {
       </h1>
       <span className="flex flex-col sm:flex-row  ml-0 sm:ml-auto text-[9pt]  items-center justify-center gap-0 sm:gap-2 ">
         <h2 className="uppercase underline  ">@VirtuallyAnything.xyz.</h2>
-        <p className="font-medium font-bolder">V.0.0.2</p>
+        <p className="font-medium font-bolder">V.0.0.3</p>
       </span>
     </div>
   );

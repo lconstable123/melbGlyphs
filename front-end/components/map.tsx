@@ -9,6 +9,7 @@ import {
   Popup,
   useMapEvents,
 } from "react-leaflet";
+import { DivIcon } from "leaflet";
 import toast from "react-hot-toast";
 export const Map = ({
   text,
@@ -22,6 +23,13 @@ export const Map = ({
   allowSearch: boolean;
 }) => {
   //fitzroy
+
+  const circleIcon = new DivIcon({
+    className: "custom-circle-icon", // we'll style this in CSS
+    html: "<div></div>", // empty div to style
+    iconSize: [20, 20], // width, height of the circle
+    iconAnchor: [10, 10], // center the circle on the coordinates
+  });
 
   const startingLoc: [number, number] = startingLocation
     ? [startingLocation.latitude, startingLocation.longitude]
@@ -146,7 +154,10 @@ export const Map = ({
           handleSetLocation={handleSetLocation}
         />
         {selectedPosition && (
-          <Marker position={cursorPosition || selectedPosition}>
+          <Marker
+            icon={circleIcon}
+            position={cursorPosition || selectedPosition}
+          >
             <Popup>Selected Location</Popup>
           </Marker>
         )}
