@@ -14,7 +14,7 @@ export const BottomBar = ({ images }: { images: TImages }) => {
     setFilterArtist(selectedArtist === "all" ? null : selectedArtist);
   };
   return (
-    <div className=" z-100 flex justify-start items-center pointer-events-auto mt-auto w-screen h-15 bg-black">
+    <div className=" z-100 flex flex-col justify-start  items-center pt-2 pointer-events-auto mt-auto w-screen h-45 sm:h-15  bg-black">
       <select
         onChange={handleChangeFilter}
         className=" border border-white/40 bg-black text-white  w-40 h-7 px-2 py-0 mx-7  text-sm"
@@ -29,6 +29,7 @@ export const BottomBar = ({ images }: { images: TImages }) => {
           </option>
         ))}
       </select>
+      {/* <div className="w-full h-20 mt-auto  bg-white/10" /> */}
     </div>
   );
 };

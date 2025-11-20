@@ -13,8 +13,8 @@ function App() {
   const { uploadedImages, mode, inspectingImage, allImages, setMode } =
     useLocationContext();
   return (
-    <div className="flex-col flex justify-start ">
-      <section className="overflow-hidden select-none pointer-events-none flex flex-col absolute inset-0 z-30">
+    <div className="flex-col flex justify-start w-screen h-screen overflow-hidden  relative">
+      <section className="overflow-hidden  select-none pointer-events-none flex flex-col absolute inset-0 z-30">
         <TopBar />
         {/* <TopBar /> */}
         {/* <ItemDebug /> */}
@@ -23,7 +23,6 @@ function App() {
         <section className="border-amber-300 relative flex flex-col h-full w-full    ">
           {inspectingImage && <ImageInspector />}
         </section>
-        <BottomBar images={allImages} />
 
         <div
           className={cn(
@@ -33,14 +32,15 @@ function App() {
         >
           <SplashScreen />
         </div>
+        <BottomBar images={allImages} />
       </section>
       <section
         onClick={() => {
           setMode("explore");
         }}
-        className="absolute inset-0 w-screen h-full mb-2"
+        className="absolute inset-0 w-screen h-screen"
       >
-        <div className="pointer-events-none absolute inset-0   z-10 bg-gradient-to-b from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" />
+        <div className="pointer-events-none absolute inset-0   z-10 bg-linear-to-b from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" />
         {mode !== "explore" && (
           <div className="overflow-none  cursor-default absolute inset-0  z-10 " />
         )}

@@ -10,7 +10,7 @@ export const AddImage = () => {
       }}
       className={`transition-all duration-500 ${
         mode !== "upload" ? "translate-x-0" : "-translate-x-full"
-      }         group fixed left-0 top-30 z-50 w-17 h-17 border-2 bg-black border-neutral-800 rounded-r-full`}
+      }         group fixed left-0 top-30 z-50 w-17 h-17  bg-black border-neutral-800 rounded-r-full`}
     >
       <i
         id="close-button"

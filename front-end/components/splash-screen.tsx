@@ -11,7 +11,7 @@ export const SplashScreen = () => {
       <div
         id="splash-screen"
         className={cn(
-          "transition-all flex flex-col w-full items-center justify-center",
+          "transition-all flex flex-col w-full h-screen items-center justify-center",
           mode === "initial"
             ? "bg-black/60 h-full"
             : "bg-black-0 h-full lg:h-auto"
@@ -51,7 +51,7 @@ const InfoPanel = () => {
       onClick={() => setMode("explore")}
       className="flex flex-col justify-center items-center h-screen w-screen"
     >
-      <div className="flex pointer-events-auto gap-x-5  relative flex-col w-full sm:w-auto lg:flex-row h-full sm:h-auto px-10 py-10 items-center bg-saImg justify-center">
+      <div className="flex pointer-events-auto gap-x-5  relative flex-col w-full sm:w-auto lg:flex-row h-screen sm:h-auto px-10 py-10 items-center bg-saImg justify-center">
         <IoMdCloseCircle
           className="visible sm:invisible  absolute top-2 right-2 w-10 h-10 cursor-pointer"
           onClick={() => setMode("explore")}
@@ -68,6 +68,7 @@ const InfoPanel = () => {
         <div className="flex items-center justify-center   ">
           <ImageUploader />
         </div>
+        <div className="visible sm:invisible w-full sm:w-0 h-20 sm:h-0   " />
       </div>
     </div>
   );
