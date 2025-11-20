@@ -59,7 +59,7 @@ export const ImageUploader = () => {
           const locationData = await extractLocationData(file);
           if (!locationData) {
             toast.error(
-              `No location data found in image metadata. Please add location manually.`
+              `No location data found in image of type ${file.type}. Please add location manually.`
             );
           }
           return {
