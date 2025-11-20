@@ -175,7 +175,7 @@ export const ImageUploads = () => {
 
         <motion.div
           animate={controls}
-          className="flex flex-row   justify-center  flex-wrap gap-4  "
+          className="flex flex-row   justify-center   flex-wrap gap-3   "
         >
           {uploadedImages?.map((image) => (
             <div key={image.id} className="">

@@ -47,7 +47,7 @@ function App() {
         <GeoMap />
       </section>
       <section className="pointer-events-none h-screen flex-col items-center w-full flex z-0 border-white">
-        <div className="mt-auto mb-10 pointer-events-auto ">
+        <div className="mt-auto sm:mb-10 mb-30 pointer-events-auto ">
           <ImageUploads />
         </div>
       </section>

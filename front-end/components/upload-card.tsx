@@ -67,11 +67,11 @@ export const UploadCard = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="flex flex-col gap-2 w-50 justify-start   "
+      className="flex flex-col gap-2 w-30 sm:w-40  justify-start   "
     >
       <div
         id="image-container"
-        className="group relative  border-gray-700 h-50  rounded-sm overflow-hidden  "
+        className="group relative  border-gray-700 h-30 sm:h-40  rounded-sm overflow-hidden  "
       >
         <div
           id="whitefader"
@@ -109,7 +109,7 @@ export const UploadCard = ({
       </div>
       <div
         id="location-info"
-        className="select-none  text-sm   h-full text-white bg-opacity-75 pb-0 pt-0"
+        className="select-none  text-sm   h-25 text-white bg-opacity-75 pb-0 pt-0"
       >
         <div id="location-details" className="flex flex-col   items-center">
           <ArtistModal

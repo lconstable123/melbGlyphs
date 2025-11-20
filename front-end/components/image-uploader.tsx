@@ -26,7 +26,15 @@ export const ImageUploader = () => {
 
   const handleImageChange = (e: any) => {
     setMode("explore");
-    const files: File[] = Array.from(e.target.files);
+    if (!e.target.files) return;
+    let files: File[] = Array.from(e.target.files!);
+
+    if (files.length > 4) {
+      toast.success("You can only upload up to 4 images at a time.");
+      e.target.value = ""; // reset the input so they can reselect
+      return;
+    }
+
     const imagePreviews = files.map((file, index) => {
       const alreadyExists = uploadedImages.some(
         (existingImg) =>
