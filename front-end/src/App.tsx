@@ -40,7 +40,7 @@ function App() {
         }}
         className="absolute inset-0 w-screen h-full mb-2"
       >
-        <div className="pointer-events-none absolute inset-0   z-30 bg-gradient-to-b from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" />
+        <div className="pointer-events-none absolute inset-0   z-10 bg-gradient-to-b from-fuchsia-500/10 to-rose-500/0 via-rose-500/2" />
         {mode !== "explore" && (
           <div className="overflow-none  cursor-default absolute inset-0  z-10 " />
         )}
