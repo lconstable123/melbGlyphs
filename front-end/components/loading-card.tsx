@@ -4,7 +4,7 @@ import { RiAddLargeFill } from "react-icons/ri";
 
 export const LoadingCard = () => {
   return (
-    <div className="h-30 sm:h-40 w-30 sm:w-40  relative flex items-center justify-center bg-black/10 outline-1">
+    <div className="h-30 sm:h-40 w-30 sm:w-40  relative flex items-center mb-20 justify-center bg-black/10 outline-1">
       <Spinner />
       <p className="absolute bottom-2 text-xs">Converting Image</p>
     </div>

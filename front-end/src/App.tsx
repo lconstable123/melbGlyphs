@@ -2,12 +2,14 @@ import "./App.css";
 
 import { SplashScreen } from "../components/splash-screen";
 import { useLocationContext } from "./lib/providers/location-provider";
-import { GeoMap } from "../components/geo-map";
+import { GeoMap2 } from "../components/geo-map2";
 import { ImageInspector } from "../components/image-inspector";
 import { ImageUploads } from "../components/image-uploads";
 import { AddImage } from "../components/add-image";
 import { TopBar } from "../components/topbar";
 import { BottomBar } from "../components/bottombar";
+import { RotateButton } from "../components/rot-button";
+import { CamButton } from "../components/cam-button";
 import { cn } from "./lib/utils";
 function App() {
   const { uploadedImages, mode, inspectingImage, allImages, setMode } =
@@ -19,6 +21,8 @@ function App() {
         {/* <TopBar /> */}
         {/* <ItemDebug /> */}
         <AddImage />
+        <RotateButton />
+        {/* <CamButton /> */}
 
         <section className="border-amber-300 relative flex flex-col h-full w-full    ">
           {inspectingImage && <ImageInspector />}
@@ -44,7 +48,7 @@ function App() {
         {mode !== "explore" && (
           <div className="overflow-none  cursor-default absolute inset-0  z-10 " />
         )}
-        <GeoMap />
+        <GeoMap2 />
       </section>
       <section className="pointer-events-none h-screen flex-col items-center w-full flex z-0 border-white">
         <div className="mt-auto sm:mb-10 mb-30 pointer-events-auto ">

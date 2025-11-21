@@ -83,11 +83,6 @@ export const Map = ({
     useMapEvents({
       click(e) {
         onClick([e.latlng.lat, e.latlng.lng]);
-        // toast.success(
-        //   `Location selected: [${e.latlng.lat.toFixed(
-        //     4
-        //   )}, ${e.latlng.lng.toFixed(4)}]`
-        // );
         const coords: Tcoordinates = [e.latlng.lat, e.latlng.lng];
         handleSetLocation(parseLoc(coords));
       },
@@ -125,15 +120,6 @@ export const Map = ({
       }
     }
   }, [startingLocation]);
-
-  //if location is null, enable searching, if not, disable searching
-  // useEffect(() => {
-  //   if (startingLocation) {
-  //     setAllowSearch(false);
-  //   } else {
-  //     setAllowSearch(true);
-  //   }
-  // }, [startingLocation]);
 
   return (
     <div className="w-full  h-full bg-gray-500">

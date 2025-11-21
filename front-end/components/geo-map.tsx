@@ -44,6 +44,25 @@ export const GeoMap = () => {
 
     map.on("load", () => setLoading(false));
 
+    const ZOOM_THRESHOLD = 8.42;
+    const onZoom = () => {
+      const zoom = map.getZoom();
+      // toast.success("Zoom level: " + zoom.toFixed(2));
+      popupsRef.current.forEach((popup) => {
+        const el = popup.getElement();
+        if (!el) return;
+        if (zoom < ZOOM_THRESHOLD) {
+          el.style.display = "none";
+          // popup.remove();
+        } else {
+          el.style.display = "block";
+          // if (!popup.isOpen()) popup.addTo(map);
+        }
+      });
+    };
+
+    map.on("zoom", onZoom);
+
     return () => map.remove();
   }, []); // <-- FIXED (no ref deps!)
 
@@ -72,13 +91,11 @@ export const GeoMap = () => {
 
       const absoluteUrl = img.path;
 
-      // Marker icon
       const markerEl = document.createElement("div");
       markerEl.classList.add("custom-marker");
 
       markerEl.style.backgroundImage = `url(${absoluteUrl})`;
 
-      // Popup — never closes
       const popup = new mapboxgl.Popup({
         offset: 25,
         className: "custom-popup",
@@ -137,21 +154,6 @@ export const GeoMap = () => {
         });
       }
     }
-
-    const ZOOM_THRESHOLD = 8.42;
-    const onZoom = () => {
-      const zoom = map.getZoom();
-      // toast.success("Zoom level: " + zoom.toFixed(2));
-      popupsRef.current.forEach((popup) => {
-        if (zoom < ZOOM_THRESHOLD) {
-          popup.remove();
-        } else {
-          if (!popup.isOpen()) popup.addTo(map);
-        }
-      });
-    };
-
-    map.on("zoom", onZoom);
 
     setLoading(false);
   }, [uploadedImages, allImages, hardMapReset]);

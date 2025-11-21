@@ -15,11 +15,11 @@ import { motion, useAnimation } from "framer-motion";
 import { useLocationContext } from "../src/lib/providers/location-provider";
 import { getPresignedUrl, uploadImages } from "../src/lib/server-utils";
 import { ADD_IMAGES, AddImages, toBase64 } from "../src/lib/gql-utils";
-import { useMutation, useQuery } from "@apollo/client/react";
 
 // import { useLocationContext } from "@/lib/providers/location-provider";
 
 export const ImageUploads = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   //from context
   const bucketName = import.meta.env.VITE_S3_BUCKET_NAME!;
   const region = import.meta.env.VITE_AWS_REGION!;
@@ -30,12 +30,13 @@ export const ImageUploads = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
+    setIsSubmitting(true);
     // Ensure all images have location data
     const missingData = uploadedImages.some((img) => !img.locationData);
     if (missingData) {
       toast.error("Please set location data for all images before uploading.");
       handleAnimateError();
+      setIsSubmitting(false);
       return;
     }
 
@@ -45,6 +46,7 @@ export const ImageUploads = () => {
       if (imagesWithFiles.length === 0) {
         toast.error("No valid files to upload.");
         handleAnimateError();
+        setIsSubmitting(false);
         return;
       }
 
@@ -121,6 +123,7 @@ export const ImageUploads = () => {
       if (!response.success) {
         toast.error(response.message || "Unknown error uploading images.");
         handleAnimateError();
+        setIsSubmitting(false);
         return;
       }
 
@@ -131,6 +134,8 @@ export const ImageUploads = () => {
       handleAnimateError();
       console.error("Error uploading images:", err);
       toast.error("Failed to upload images.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -170,7 +175,17 @@ export const ImageUploads = () => {
         className=" flex flex-col justify-start gap-1 "
       >
         <div className="h-full ">
-          {uploadedImages.length > 0 && <Button type="submit">Upload</Button>}
+          {uploadedImages.length > 0 && (
+            <div
+              className={`${
+                isSubmitting ? "opacity-30 pointer-events-none" : "opacity-100"
+              }`}
+            >
+              <Button type="submit">
+                {isSubmitting ? "Uploading..." : "Upload"}
+              </Button>
+            </div>
+          )}
         </div>
 
         <motion.div

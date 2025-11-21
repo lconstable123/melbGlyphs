@@ -5,7 +5,7 @@ import { cn } from "../src/lib/utils";
 import { IoMdCloseCircle } from "react-icons/io";
 import { toast } from "react-hot-toast";
 export const SplashScreen = () => {
-  const { setMode, mode } = useLocationContext();
+  const { setMode, mode, fontsLoaded } = useLocationContext();
   return (
     <>
       <div
@@ -45,11 +45,14 @@ const Banner = ({ size }: { size: "small" | "large" }) => {
 };
 
 const InfoPanel = () => {
-  const { setMode } = useLocationContext();
+  const { setMode, fontsLoaded } = useLocationContext();
   return (
     <div
       onClick={() => setMode("explore")}
-      className="flex flex-col justify-center items-center h-screen w-screen"
+      className={cn(
+        "transition-opacity duration-700 flex flex-col justify-center items-center h-screen w-screen",
+        !fontsLoaded ? "opacity-0" : "opacity-100"
+      )}
     >
       <div className="flex pointer-events-auto gap-x-5  relative flex-col w-full sm:w-auto lg:flex-row h-screen sm:h-auto px-10 py-10 items-center bg-saImg justify-center">
         <IoMdCloseCircle

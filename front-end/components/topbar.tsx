@@ -4,13 +4,13 @@ import { Button } from "../src/components/ui/button";
 import { cn } from "../src/lib/utils";
 import { IoMdCloseCircle } from "react-icons/io";
 export const TopBar = () => {
-  const { setMode, mode } = useLocationContext();
+  const { setMode, mode, fontsLoaded } = useLocationContext();
   return (
     <div
       id="top-bar"
       className={cn(
         " transition-all flex flex-col sm:flex-row  gap-y-1 bg-black  px-5 py-3  h-auto text-sm   w-full  items-center justify-center",
-        mode === "initial" ? "" : ""
+        fontsLoaded ? "opacity-100" : "opacity-0"
       )}
     >
       <h1 className={cn("   font-bold  text-neutral-50")}>
@@ -18,7 +18,7 @@ export const TopBar = () => {
       </h1>
       <span className="flex flex-col sm:flex-row  ml-0 sm:ml-auto text-[9pt]  items-center justify-center gap-0 sm:gap-2 ">
         <h2 className="uppercase underline  ">@VirtuallyAnything.xyz.</h2>
-        <p className="font-medium font-bolder">V.0.0.3</p>
+        <p className="font-medium font-bolder">V.0.0.4</p>
       </span>
     </div>
   );

@@ -32,7 +32,6 @@ export const ImageInspector = () => {
     "server"
   );
   const handleUpdateArtist = (artist: string | null) => {
-    // toast.success("Artist updated to " + artist);
     handleUpdateImage({ artist: artist }, inspectingImage!.id);
     setInspectingImage((prev) => {
       if (!prev) return prev;

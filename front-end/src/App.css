@@ -25,6 +25,12 @@ p {
 .font-bolder {
   font-weight: 800;
 }
+.no-select {
+  user-select: none; /* Standard */
+  -webkit-user-select: none; /* Safari/Chrome */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
+}
 
 .saira-stencil,
 h2 {
@@ -89,8 +95,8 @@ h2 {
 
 .custom-marker {
   opacity: 1;
-  width: 65px;
-  height: 65px;
+  width: 40px;
+  height: 40px;
   background-size: cover;
   border-radius: 50%;
   box-shadow: 0 0 5px rgba(0, 0, 0, 1);
@@ -120,6 +126,7 @@ h2 {
 .mapboxgl-popup.custom-popup .mapboxgl-popup-tip {
   /* background: black !important; */
   border-top-color: black;
+  display: none;
 }
 .mapboxgl-popup-close-button {
   top: 0px;
@@ -139,6 +146,7 @@ h2 {
   display: flex;
   flex-direction: column;
   border-radius: 5px;
+  width: 60px;
   overflow: hidden;
   /* border: 1px solid oklch(66.7% 0.295 132.15); */
 }
@@ -159,8 +167,8 @@ h2 {
 
 .map-popup__image {
   vertical-align: middle;
-  width: 100px;
-  height: 120px;
+  width: 60px;
+  height: 60px;
   object-fit: cover;
 }
 .map-popup__image-wrapper {
